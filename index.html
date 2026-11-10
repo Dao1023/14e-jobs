@@ -92,6 +92,28 @@ main.err-mode .err{display:block}
 .note.fx::before{content:"◥";font-size:9px;margin-right:4px;color:#8d959b;vertical-align:1px}
 .unsel{flex:0 0 auto;margin-left:auto;height:20px;padding:0 8px;border:1px solid #d8dcdf;font-size:10px;line-height:18px;color:#4d565d}
 .unsel:hover{border-color:#b9c0c5;color:#1f262b;background:#f7f8f9}
+/* 顶栏：口径总开关（沿用 .seg 的方角样式，无阴影无动画） */
+.tools .tl{flex:0 0 auto;font-size:9px;letter-spacing:.1em;color:#9aa1a7;font-weight:600}
+.vfail{flex:0 0 auto;font-size:10px;color:#8a5b50;letter-spacing:.02em}
+/* 底栏：核实信息（常驻同一行，截断不换行） */
+.vline{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:6px;overflow:hidden;font-size:10px;line-height:1.2;color:#4d565d}
+.vline:empty{display:none}
+.vline .vsw{flex:0 0 auto;width:8px;height:8px;border:1px solid rgba(30,38,44,.22);background:#fff}
+.vline .vsw.match{background:#4f7a52;border-color:#4f7a52}
+.vline .vsw.close{background:#b08a2e;border-color:#b08a2e}
+.vline .vsw.mismatch{background:#a8453a;border-color:#a8453a}
+.vline .vsw.biased_def{background:#6a4d8a;border-color:#6a4d8a}
+.vline .vsw.unverifiable{background:#8d959b;border-color:#8d959b}
+.vline .vsw.none{background:#fff;border-color:#aeb6bb}
+.vline .vt{flex:0 0 auto;font-variant-numeric:tabular-nums}
+.vline .vt b{font-weight:600;color:#1f262b}
+.vline .vs{flex:0 0 auto;color:#39424a;text-decoration:none;border-bottom:1px solid #cdd3d7}
+.vline .vs::before{content:"·";margin:0 5px 0 2px;color:#b6bdc2;border:0}
+.vline .vs:hover{border-bottom-color:#39424a}
+.vline .vn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8f979d}
+/* 底栏：合计口径注释（四段重叠 / 子项和与块值不等），只在底栏里加一句，不新增行 */
+.fsum{flex:0 0 auto;max-width:58%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:1.2;color:#6b6157;font-variant-numeric:tabular-nums}
+.fb-idle .hint .s.warn{color:#6b6157}
 
 @media (max-width:1000px){
   .bar{gap:10px;padding:0 10px}
@@ -113,6 +135,13 @@ main.err-mode .err{display:block}
     </div>
     <div class="chips" id="chips"></div>
     <div class="tools">
+      <span class="tl">口径</span>
+      <div class="seg" id="segBasis" role="tablist" aria-label="口径">
+        <button data-basis="orig" class="on" aria-selected="true">原文口径</button>
+        <button data-basis="authority" aria-selected="false">核实口径</button>
+      </div>
+      <span class="vfail" id="basisFail" hidden>核查数据未加载</span>
+      <span class="tl">视图</span>
       <div class="seg" id="seg" role="tablist" aria-label="视图"></div>
       <button class="btn" id="collapseAll" disabled>全部收起</button>
     </div>
@@ -126,6 +155,7 @@ main.err-mode .err{display:block}
       <div class="hint">
         <div class="m">悬停方块看数据 · <b>点击就地展开</b> · Esc 逐级收起</div>
         <div class="s">数字单位：万人；占比为占全国 14 亿人的比例</div>
+        <div class="s warn" id="fIdleSum" hidden></div>
       </div>
       <div class="legend" id="legend"></div>
     </div>
@@ -137,6 +167,8 @@ main.err-mode .err{display:block}
         <div class="cell"><span class="k">原文依据</span><div class="v ev" id="fEv"></div></div>
         <div class="fb-meta">
           <span class="conf" id="fConf"></span>
+          <span class="vline" id="fVer" hidden></span>
+          <span class="fsum" id="fSum" hidden></span>
           <span class="note" id="fNull" hidden>原文未给数据</span>
           <span class="note fx" id="fFx" hidden>面积已放大以便可见</span>
           <button class="unsel" id="fUnsel" hidden>取消选中</button>
@@ -155,9 +187,11 @@ main.err-mode .err{display:block}
 const $ = s => document.querySelector(s);
 const stageEl = $('#stage'), canvas = $('#canvas');
 const chipsEl = $('#chips'), segEl = $('#seg'), btnAll = $('#collapseAll'), errEl = $('#err');
+const segBasis = $('#segBasis'), basisFail = $('#basisFail');
 const fbEl = $('#fb'), legendEl = $('#legend');
 const fName = $('#fName'), fVal = $('#fVal'), fPct = $('#fPct'), fEv = $('#fEv');
-const fConf = $('#fConf'), fNull = $('#fNull'), fFx = $('#fFx'), fUnsel = $('#fUnsel');
+const fConf = $('#fConf'), fVer = $('#fVer'), fNull = $('#fNull'), fFx = $('#fFx'), fUnsel = $('#fUnsel');
+const fSum = $('#fSum'), fIdleSum = $('#fIdleSum');
 
 const CONF = { explicit: '精确', inferred: '推算', unclear: '口径不明' };
 /* 一级分组：4 段 / 7 群体的色相各一套，都是低饱和浅色 */
@@ -236,7 +270,9 @@ const SHORT = {
 
 const S = {
   data: null, scheme: null, root: null, W: 0, H: 0, base: 0,
-  expanded: new Set(), order: [], pin: null, hover: null
+  expanded: new Set(), order: [], pin: null, hover: null,
+  /* basis: 'orig' 原文口径（默认） / 'authority' 核实口径；ver: verify.json 的 byNodeId；vfail: 核查数据未加载 */
+  basis: 'orig', ver: null, vfail: false
 };
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -287,6 +323,65 @@ function pctFine(v) {
   return Math.round(p) + '%';
 }
 
+/* ---------------- 口径：权重与数值 ----------------
+   _w  原文权重（UP 主给的值 / 子项推算）
+   _wa 核实权重（verify.json 的权威值，父节点按子项自洽）
+   两套并存，切换只换取数，不改数据。 */
+function wt(d) {
+  if (S.basis === 'authority' && typeof d._wa === 'number' && isFinite(d._wa)) return Math.max(d._wa, 0);
+  return Math.max(d._w || 0, 0);
+}
+/* 当前口径下这个节点自己的数值：真·无数据永远不给数字 */
+function valOf(n) {
+  if (S.basis !== 'authority') return n.value;
+  if (n._null) return null;
+  return typeof n._wa === 'number' ? n._wa : n.value;
+}
+/* 核实值：1617.1 → 1,617.1 万；3218 → 3,218 万；18913.2 → 1.89 亿 */
+function fmtAuth(v) {
+  if (v == null || !isFinite(v)) return '—';
+  if (Math.abs(v) >= 10000) return trimNum(v / 10000, 2) + ' 亿';
+  const d = Math.abs(v) >= 100 ? 1 : 2;
+  return Number(v.toFixed(d)).toLocaleString('en-US', { maximumFractionDigits: d }) + ' 万';
+}
+/* 差值文案：先给相对原文的差，再给一句人话（原文偏低/偏高多少，相对核实值算） */
+function absPct(x) {
+  return (Math.abs(x) < 10 ? Math.abs(x).toFixed(1).replace(/\.0$/, '') : Math.round(Math.abs(x)).toLocaleString('en-US')) + '%';
+}
+function diffText(orig, auth, verdict) {
+  if (typeof orig !== 'number' || !isFinite(orig) || !orig) return '';
+  if (typeof auth !== 'number' || !isFinite(auth)) return '';
+  if (verdict === 'match') return '';
+  const d = (auth - orig) / orig * 100;
+  if (Math.abs(d) < 0.005) return '差 0%';
+  const head = '差 ' + (d > 0 ? '+' : '−') + absPct(d);
+  if (verdict === 'close') return head;
+  const back = (auth - orig) / auth * 100;
+  if (Math.abs(back) < 0.5) return head;
+  return head + ' ｜ 原文' + (back > 0 ? '偏低 ' : '偏高 ') + absPct(back);
+}
+/* 来源简称：优先取机构名，其次是书名号里的年鉴名 */
+function srcShort(s) {
+  let t = String(s || '').split(/[；;]/)[0].trim();
+  const org = t.match(/^([^《]{2,14}?)《/);
+  if (org) return org[1];
+  const bk = t.match(/《([^》]*)》/);
+  if (bk) {
+    const name = bk[1].replace(/\d{4}\s*年?$/, '').trim() || bk[1];
+    return '《' + (name.length > 12 ? name.slice(0, 12) + '…' : name) + '》';
+  }
+  t = t.replace(/[（(][^）)]*[）)]/g, '').trim();
+  return t.length > 16 ? t.slice(0, 16) + '…' : t;
+}
+const VERDICT = {
+  match: ['match', '一致'],
+  close: ['close', '接近'],
+  mismatch: ['mismatch', '口径不同'],
+  biased_def: ['biased_def', '疑似口径挪用'],
+  unverifiable: ['unverifiable', '无法核实']
+};
+
+
 /* ---------------- 二分矩形切分（d3.treemapBinary 同类） ----------------
    面积严格按权重比例；切的方向会让小项尽量落成「宽而扁」的条，
    免得出现 40px 宽、700px 高的细缝，标签没法读。
@@ -295,13 +390,13 @@ function layoutCells(items, rect, gap) {
   const n = items.length;
   if (!n) return [];
   for (const d of items) d._distort = false;
-  const total = items.reduce((s, d) => s + Math.max(d._w || 0, 0), 0);
+  const total = items.reduce((s, d) => s + wt(d), 0);
   if (!(total > 0) || rect.w < 2 || rect.h < 2) {
     return items.map(() => ({ x: rect.x, y: rect.y, w: 1, h: 1 }));
   }
   const floor = total * 0.0012;
   const list = items.map((d, i) => {
-    const raw = Math.max(d._w || 0, 0);
+    const raw = wt(d);
     return { d, i, raw, w: Math.max(raw, floor) };
   });
   /* 权重被保底抬高 → 面积失真 */
@@ -311,7 +406,7 @@ function layoutCells(items, rect, gap) {
   /* 细项条：母块够大时，占比 < 0.8% 的子项排成一条高 24px 的底边，横着放名字 */
   let strip = null;
   if (n >= 2 && n <= 16 && rect.w * rect.h >= 12000) {
-    const tiny = list.filter(x => (x.d._w || 0) / total < 0.008);
+    const tiny = list.filter(x => wt(x.d) / total < 0.008);
     if (tiny.length && tiny.length < 5) {
       strip = { h: 24, items: tiny };
     }
@@ -450,6 +545,32 @@ function prep(root) {
     n._null = noVal && n._kids.length === 0;
   });
 
+  /* 核实口径：另算一套权重 _wa，不改原文 _w。规则写死：
+     1) authority_value 是数字且 unit 为「万人」→ 用权威值；
+     2) unit 不可比（「万人年」等）→ 忽略，沿用原文；
+     3) 父节点自身无权威值 → 子项有效值之和（强制自洽，父块不小于子块和）；
+     4) 无核查记录 / 真·无数据 → 保持原值。 */
+  const V = S.ver || {};
+  const recOf = id => (id && V[id]) || null;
+  for (let i = all.length - 1; i >= 0; i--) {
+    const n = all[i];
+    const rec = recOf(n.id);
+    n._vrec = rec;
+    const own = rec && typeof rec.authority_value === 'number' && isFinite(rec.authority_value) && rec.unit === '万人'
+      ? rec.authority_value : null;
+    n._auth = own;
+    if (n._kids.length) {
+      const sum = n._kids.reduce((s, c) => s + (typeof c._wa === 'number' ? c._wa : (c._w || 0)), 0);
+      n._wa = own != null ? own : (sum > 0 ? sum : (n._w || 0));
+    } else {
+      n._wa = own != null ? own : n._w;
+    }
+  }
+  root._vrec = recOf(root.id);
+  root._auth = root._vrec && typeof root._vrec.authority_value === 'number'
+    && isFinite(root._vrec.authority_value) && root._vrec.unit === '万人' ? root._vrec.authority_value : null;
+  root._wa = root._auth != null ? root._auth : (typeof root.value === 'number' ? root.value : root._w);
+
   root._byId = {};
   all.forEach(n => { root._byId[n.id] = n; });
   root._all = all;
@@ -498,7 +619,7 @@ function labelSpec(n, w, h) {
     if (!hero && w < fs * 4) {
       if (aw < fs * 2.6) continue;            // 本字号连两个字都放不下，换小一号
       const vfs = fs >= 11 ? 10.5 : 9.5;
-      const canVal = n.value != null && ah >= lineH + vfs * 1.1 + 2;
+      const canVal = valOf(n) != null && ah >= lineH + vfs * 1.1 + 2;
       return { fs, pad, lineH, need: 1, maxL: 1, vfs, canVal, hero: false, inline: false, narrow: true };
     }
     const maxL = Math.max(1, Math.min(3, Math.floor((ah + 1) / (lineH + 1))));
@@ -508,7 +629,7 @@ function labelSpec(n, w, h) {
     /* 第二行只剩一个字（3+1 那种）宁可整名单行省略，也不折 */
     if (need === 2 && (aw < fs * 3.2 || tw - aw < fs * 2)) continue;
     const vfs = hero ? 40 : (fs === 14 ? 13 : (fs === 11 ? 10.5 : 9.5));
-    const canVal = n.value != null && ah >= lineH * need + vfs * 1.1 + 2;
+    const canVal = valOf(n) != null && ah >= lineH * need + vfs * 1.1 + 2;
     if (hero && !canVal) return { fs, pad, lineH, need, maxL, vfs, canVal: false, hero: true, inline: false };
     return { fs, pad, lineH, need, maxL, vfs, canVal, hero, inline: false };
   }
@@ -564,6 +685,7 @@ function renderNode(n, parentEl) {
       d.appendChild(ag);
     }
     const spec = labelSpec(n, r.w, r.h);
+    const nv = valOf(n);
     if (spec) {
       const lb = document.createElement('div');
       lb.className = 'lb' + (spec.hero ? ' hero' : '');
@@ -593,19 +715,19 @@ function renderNode(n, parentEl) {
         top.appendChild(nm);
         const bot = document.createElement('div');
         bot.style.marginTop = '12px';
-        if (spec.canVal && n.value != null) {
+        if (spec.canVal && nv != null) {
           const vl = document.createElement('div');
           vl.className = 'vl';
           vl.style.fontSize = spec.vfs + 'px';
           vl.style.marginTop = '0';
-          vl.textContent = fmtWan(n.value);
+          vl.textContent = fmtWan(nv);
           bot.appendChild(vl);
         }
         const mt = document.createElement('div');
         mt.className = 'mt';
         mt.style.fontSize = '11px';
         mt.style.marginTop = '8px';
-        mt.textContent = '占比 ' + pctOf(n.value);
+        mt.textContent = '占比 ' + pctOf(nv);
         bot.appendChild(mt);
         if (n._kids.length) {
           const kd = document.createElement('div');
@@ -625,20 +747,20 @@ function renderNode(n, parentEl) {
         lb.appendChild(bot);
       } else {
         lb.appendChild(nm);
-        if (spec.canVal && n.value != null) {
+        if (spec.canVal && nv != null) {
           const vl = document.createElement('div');
           vl.className = 'vl';
           vl.style.fontSize = spec.vfs + 'px';
           vl.style.marginTop = spec.inline ? '0' : '2px';
           vl.style.flex = '0 0 auto';
-          vl.textContent = fmtWan(n.value);
+          vl.textContent = fmtWan(nv);
           lb.appendChild(vl);
         }
         if (spec.fs === 14 && spec.canVal && r.h >= 130 && r.w >= 160) {
           const mt = document.createElement('div');
           mt.className = 'mt';
           mt.style.fontSize = '10px';
-          mt.textContent = '占比 ' + pctOf(n.value);
+          mt.textContent = '占比 ' + pctOf(nv);
           lb.appendChild(mt);
           if (n._kids.length && r.h >= 190 && r.w >= 190) {
             const kd = document.createElement('div');
@@ -682,15 +804,66 @@ function aggSumText(v) {
   if (v >= 10000) return trimNum(v / 10000, 2) + ' 亿';
   return (v >= 1000 ? Math.round(v).toLocaleString('en-US') : trimNum(v, 1)) + ' 万';
 }
+/* 合计口径注释：四段重叠、子项和与本块不等 —— 只在底栏加一句，不新增行 */
+const CN_NUM = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+function cnNum(k) { return CN_NUM[k] || String(k); }
+/* 年龄四段（合并/仅年龄视图的根子项） */
+function ageStages() {
+  if (!S.root) return null;
+  const sid = S.scheme && S.scheme.id;
+  if (sid !== 'scheme-c' && sid !== 'scheme-a') return null;
+  const ks = S.root._kids || [];
+  return ks.length === 4 ? ks : null;
+}
+function idleOverlapText() {
+  if (S.basis !== 'authority' || S.vfail) return '';
+  const ks = ageStages();
+  if (!ks || !(S.base > 0)) return '';
+  const sum = ks.reduce((s, k) => s + wt(k), 0);
+  if (!(sum > 0)) return '';
+  const over = (sum - S.base) / S.base * 100;
+  return '四段合计 ' + fmtAuth(sum) + ' ＞ 全国 ' + fmtAuth(S.base)
+    + '（+' + over.toFixed(1) + '%）：年龄分段重叠，非计算错误';
+}
+function nodeSumNote(n) {
+  if (S.vfail || !n) return '';
+  const bits = [];
+  const ks = ageStages();
+  if (S.basis === 'authority' && ks && ks.indexOf(n) >= 0 && S.base > 0) {
+    const p = ks.reduce((s, k) => s + Math.round(wt(k) / S.base * 100), 0);
+    bits.push('四段合 ' + p + '%');
+  }
+  const kids = n._kids || [];
+  const own = valOf(n);
+  if (kids.length >= 2 && typeof own === 'number' && isFinite(own) && own > 0) {
+    const cs = kids.reduce((s, k) => s + wt(k), 0);
+    const gap = own - cs;
+    if (cs > 0 && Math.abs(gap) / own >= 0.01) {
+      bits.push(cnNum(kids.length) + '组之和 ' + aggSumText(cs) + '，比本块'
+        + (gap > 0 ? '少 ' : '多 ') + aggSumText(Math.abs(gap)) + ' —— 差额无落位');
+    }
+  }
+  return bits.join(' ｜ ');
+}
+function syncSum(n) {
+  const t = n ? nodeSumNote(n) : '';
+  if (t) { fSum.textContent = t; fSum.hidden = false; fSum.title = t; }
+  else { fSum.hidden = true; fSum.textContent = ''; fSum.title = ''; }
+}
 function showIdle() {
   fbEl.dataset.state = 'idle';
+  syncSum(null);
+  const t = idleOverlapText();
+  if (t) { fIdleSum.textContent = t; fIdleSum.hidden = false; }
+  else { fIdleSum.hidden = true; fIdleSum.textContent = ''; }
 }
 function showNode(n, pinned) {
-  const p = valParts(n.value);
+  const v = valOf(n);
+  const p = valParts(v);
   fName.textContent = n.name;
   fName.title = n.name;
   fVal.innerHTML = `<span>${esc(p.n)}</span>${p.u ? `<small>${esc(p.u)}</small>` : ''}`;
-  fPct.textContent = pctFine(n.value);
+  fPct.textContent = pctFine(v);
   fEv.textContent = evidenceOf(n);
   fConf.textContent = CONF[n.confidence] || '未标注';
   fConf.classList.toggle('unclear', n.confidence === 'unclear');
@@ -698,7 +871,8 @@ function showNode(n, pinned) {
   /* 底栏文案分两种：口径未给（有子项，写合计） / 真·无数据 */
   if (n._agg) {
     fNull.hidden = false;
-    fNull.textContent = '口径未给 · 按子项合计 ' + aggSumText(n._w);
+    const sumV = S.basis === 'authority' && typeof n._wa === 'number' ? n._wa : n._w;
+    fNull.textContent = '口径未给 · 按子项合计 ' + aggSumText(sumV);
     fNull.classList.add('agg');
   } else if (n._null) {
     fNull.hidden = false;
@@ -708,8 +882,46 @@ function showNode(n, pinned) {
     fNull.hidden = true;
     fNull.classList.remove('agg');
   }
+  showVerify(n);
+  syncSum(n);
   fUnsel.hidden = !pinned;
   fbEl.dataset.state = 'node';
+}
+/* 核实信息：只在核实口径下出现，永远单独一行、截断不换行、不加浮层 */
+function showVerify(n) {
+  if (S.basis !== 'authority') { fVer.hidden = true; fVer.innerHTML = ''; fVer.title = ''; return; }
+  fVer.hidden = false;
+  const rec = n._vrec;
+  if (!rec) {
+    fVer.innerHTML = '<i class="vsw none"></i><span class="vt">未核查（沿用原文推算）</span>';
+    fVer.title = '该节点没有对应的官方口径核查记录，数值与面积沿用 UP 主原文';
+    return;
+  }
+  const met = VERDICT[rec.verdict] || ['unverifiable', '无法核实'];
+  const comparable = typeof rec.authority_value === 'number' && isFinite(rec.authority_value) && rec.unit === '万人';
+  const bits = [];
+  if (typeof rec.authority_value === 'number' && isFinite(rec.authority_value)) {
+    /* 单位不是「万人」时不能套用万人的格式化，直接原值 + 原单位 */
+    bits.push('核实 <b>' + (comparable
+      ? esc(fmtAuth(rec.authority_value))
+      : esc(rec.authority_value.toLocaleString('en-US', { maximumFractionDigits: 2 })) + ' ' + esc(rec.unit || '')) + '</b>');
+  } else {
+    bits.push('未获官方值');
+  }
+  if (rec.year) bits.push(String(rec.year));
+  if (comparable) { const dt = diffText(n.value, rec.authority_value, rec.verdict); if (dt) bits.push(dt); }
+  bits.push(met[1]);
+  if (!comparable) bits.push(rec.unit && rec.unit !== '万人' ? '单位不可比 · 沿用原文值' : '沿用原文值');
+  let html = '<i class="vsw ' + met[0] + '"></i><span class="vt">' + bits.join(' · ') + '</span>';
+  const sn = srcShort(rec.source);
+  if (sn) {
+    html += rec.url
+      ? '<a class="vs" href="' + esc(rec.url) + '" target="_blank" rel="noopener noreferrer">' + esc(sn) + '</a>'
+      : '<span class="vs">' + esc(sn) + '</span>';
+  }
+  if (rec.note) html += '<span class="vn">' + esc(rec.note) + '</span>';
+  fVer.innerHTML = html;
+  fVer.title = [rec.source, rec.note].filter(Boolean).join('\n') + (rec.verify_id ? '\n核查编号 ' + rec.verify_id : '');
 }
 function syncFooter() {
   const n = S.pin && S.root ? S.root._byId[S.pin] : null;
@@ -758,6 +970,37 @@ function collapseAll() {
 function syncAll() {
   btnAll.disabled = S.order.length === 0;
 }
+
+/* ---------------- 口径开关：只换权重与底栏文案，不动布局算法 ---------------- */
+function syncBasis() {
+  segBasis.querySelectorAll('button').forEach(b => {
+    const on = b.dataset.basis === S.basis;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+    const off = b.dataset.basis === 'authority' && S.vfail;
+    b.disabled = off;
+    if (off) b.title = '核查数据未加载';
+    else b.removeAttribute('title');
+  });
+  basisFail.hidden = !S.vfail;
+}
+function setBasis(b) {
+  if (b === 'authority' && S.vfail) return;
+  if (S.basis === b) return;
+  const hid = S.hover && S.hover.dataset ? S.hover.dataset.id : null;
+  S.basis = b;
+  S.hover = null;
+  syncBasis();
+  if (S.root) render();
+  /* 重绘会换掉块元素：底栏按当前选中/悬停重新取一次，避免残留上一口径的核实行 */
+  const n = S.root ? (S.pin && S.root._byId[S.pin] || (hid && S.root._byId[hid])) : null;
+  if (n) showNode(n, n.id === S.pin); else showIdle();
+}
+segBasis.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b || b.disabled) return;
+  setBasis(b.dataset.basis);
+});
 
 function syncChips() {
   const parts = ['<span class="cl">已展开</span>'];
@@ -862,6 +1105,7 @@ function setScheme(id) {
   measure();
   render();
   buildLegend();
+  syncBasis();
   showIdle();
   segEl.querySelectorAll('button').forEach(b => {
     b.onclick = () => { if (!b.disabled) setScheme(b.dataset.id); };
@@ -877,6 +1121,16 @@ function measure() {
 }
 /* 自检用：图区高度 */
 window.__stageHeight = () => Math.round(stageEl.getBoundingClientRect().height);
+/* 自检用：节点在当前口径下的数字（只读，不参与渲染） */
+window.__probe = id => {
+  const n = S.root && S.root._byId[id];
+  if (!n) return null;
+  return {
+    id: n.id, value: n.value, w: n._w, wa: n._wa, auth: n._auth,
+    verdict: n._vrec ? n._vrec.verdict : null, basis: S.basis, vfail: S.vfail,
+    fval: fVal.textContent, fver: fVer.hidden ? '' : fVer.textContent
+  };
+};
 
 /* ---------------- 地址栏状态（便于截图/直达） ---------------- */
 function applyHash() {
@@ -885,6 +1139,8 @@ function applyHash() {
   const view = h.get('view');
   if (view === 'age') setScheme('scheme-a');
   else if (view === 'occ') setScheme('scheme-b');
+  const bs = h.get('basis');
+  if (bs === 'auth' || bs === 'authority') setBasis('authority');
   (h.get('open') || '').split(',').filter(Boolean).forEach(id => {
     const n = S.root._byId[id];
     if (n && n._kids && n._kids.length) expand(n);
@@ -896,9 +1152,19 @@ function applyHash() {
 /* ---------------- 启动 ---------------- */
 async function boot() {
   try {
-    const res = await fetch('data/taxonomy.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    S.data = await res.json();
+    const taxP = fetch('data/taxonomy.json', { cache: 'no-store' }).then(res => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    });
+    /* 核查数据是增强项：404 / 解析失败只降级开关，不影响主视图 */
+    const verP = fetch('data/verify.json', { cache: 'no-store' }).then(res => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).catch(() => null);
+    S.data = await taxP;
+    const ver = await verP;
+    if (ver && ver.byNodeId && typeof ver.byNodeId === 'object') S.ver = ver.byNodeId;
+    else S.vfail = true;
     buildSeg();
     const def = S.data.schemes.find(s => s.id === 'scheme-c') || S.data.schemes[0];
     setScheme(def.id);
