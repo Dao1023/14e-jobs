@@ -1,0 +1,280 @@
+{
+  "sources": [
+    {
+      "id": "src-occupation-gazetteer-2022",
+      "name": "《国家职业分类大典》2022 年版",
+      "note": "七大职业群体与各子领域层级的骨架来源；UP主在图书馆发现，未给版本页码。",
+      "evidence": "我发现了国家职业分类大典 2022年版",
+      "url": null
+    },
+    {
+      "id": "src-nbs-population-2022",
+      "name": "国家统计局人口数据（2022 年底）",
+      "note": "各年龄段人口、婴儿 3218 万、退休 3.24 亿等总量口径；字幕只说“以2022年底的数据为准”，未点名年鉴。",
+      "evidence": "以2022年底的数据为准",
+      "url": null
+    },
+    {
+      "id": "src-moe-enrollment-2019",
+      "name": "2019 年公布的小学净入学率数据",
+      "note": "字幕只说“2019年公布的数据”，报告推断发布机构为教育部；99.94% 被念成“9% 19.94”。",
+      "evidence": "在2019年公布的数据显示 我国小学的净入学率达到了9% 19.94",
+      "url": null
+    },
+    {
+      "id": "src-research-stat",
+      "name": "中国的科研统计（2022 年末研发人员 532.63 万）",
+      "note": "科研人员分学科估算的基数；与 650 万科研人员存在子项大于母项的矛盾。",
+      "evidence": "根据中国的科研统计 2022年末 中国的研发人员总数达到532.63万人",
+      "url": null
+    },
+    {
+      "id": "src-industry-reports",
+      "name": "相关行业报告 / 统计局数据",
+      "note": "专业技术人员与服务业细分的主要估算依据；未列清单、无链接。",
+      "evidence": "依据相关行业报告或统计局数据",
+      "url": null
+    },
+    {
+      "id": "src-public-military",
+      "name": "我国公开数据（军人 200 万）",
+      "note": "未点名国防白皮书或具体年份。",
+      "evidence": "我国公开数据显示 目前我国军人共有200万人",
+      "url": null
+    },
+    {
+      "id": "src-official-reemployment",
+      "name": "官方统计（退休再就业 750 万）",
+      "note": "4071 万差额拆解的一半；未点名具体统计口径。",
+      "evidence": "官方统计的只有750万",
+      "url": null
+    },
+    {
+      "id": "src-nearly-100-reports",
+      "name": "UP 主自述“近百份报告”",
+      "note": "工作量陈述，无清单、无脚注，不构成可核查来源。",
+      "evidence": "查阅了近百份报告后",
+      "url": null
+    }
+  ],
+  "seams": [
+    {
+      "id": "seam-01",
+      "title": "99.94% 被念成“9% 19.94”，0.06% 辍学率由此反推",
+      "detail": "字幕 00:09:34–00:09:42 把“99.94%”断成“9% / 19.94”，再由 100%−99.94% 得辍学率 0.06%，小学辍学 6.4904 万依赖此值。若按 99.94% 的正确读法，整条辍学推算需重算。",
+      "node_ids": [
+        "scheme-a/life/student/dropout",
+        "scheme-a/life/student/dropout/dropout-primary"
+      ],
+      "severity": "high",
+      "kind": "transcript"
+    },
+    {
+      "id": "seam-02",
+      "title": "7–12 岁人口两个互斥值，差额恰好被当成“未统计”",
+      "detail": "00:09:47 给 108,173,253 人，00:10:07 又给 107,320,594 人，两者相差 852,659 人（≈85.27 万），正好等于随后“85 万 2659 人没有被统计到”的数字。所谓 0.79% 辍学数，实为两个人口口径之差。",
+      "node_ids": [],
+      "severity": "high",
+      "kind": "transcript"
+    },
+    {
+      "id": "seam-03",
+      "title": "辍学总数 178 万 ≠ 两个子项之和 99.03 万",
+      "detail": "6.4904（小学，0.06% 口径）+ 92.544（初中）= 99.0344 万，比 178 万少 78.9656 万。缺口正好是小学从 6.49 万换成 85.27 万（0.79% 口径）的差，正文未说明换口径。",
+      "node_ids": [
+        "scheme-a/life/student/dropout",
+        "scheme-a/life/student/dropout/dropout-primary",
+        "scheme-a/life/student/dropout/dropout-junior"
+      ],
+      "severity": "high",
+      "kind": "arithmetic"
+    },
+    {
+      "id": "seam-04",
+      "title": "企事业负责人 8162 ≠ 8620；党政机关 72 ≠ 75.78",
+      "detail": "企事业分项 120+8000+500=8620，原文总数 8162，差 458 万（疑似 8620 误写）；党和国家分项 0.6+0.28+1.5+8.4+65=75.78，原文 72，差 3.78 万。村委会/居委会 300 万的归属也未说明。",
+      "node_ids": [
+        "scheme-b/g1/enterprise-head",
+        "scheme-b/g1/state-party",
+        "scheme-b/g1/grassroots"
+      ],
+      "severity": "medium",
+      "kind": "arithmetic"
+    },
+    {
+      "id": "seam-05",
+      "title": "科研人员 650 万 > 研发人员总数 532.63 万",
+      "detail": "00:16:43 先给 2022 年末研发人员 532.63 万，00:17:09 又得科研人员约 650 万，子项大于母项 117.37 万。“科研 / 研发”两个口径必有一处不成立。",
+      "node_ids": [
+        "scheme-b/g2/research"
+      ],
+      "severity": "medium",
+      "kind": "arithmetic"
+    },
+    {
+      "id": "seam-06",
+      "title": "四阶段年龄重叠：实际多出 5618 万，而非 4071 万",
+      "detail": "3218+30000+80000+32400=145618 万，比 14 亿多 5618 万；原文只解释 4071 万（再就业 750 + 未纳入 3321），剩余 1547 万来自 16–30 岁在校生、退休再就业被两段重复计入。四阶段只是定义上的“理论互斥”，不是统计互斥。",
+      "node_ids": [
+        "scheme-a/root",
+        "scheme-a/life/student",
+        "scheme-a/life/adult",
+        "scheme-a/life/retired",
+        "scheme-a/life/retired/excess",
+        "scheme-a/life/retired/unaccounted"
+      ],
+      "severity": "high",
+      "kind": "definition"
+    },
+    {
+      "id": "seam-07",
+      "title": "七大职业群体合计 7.79 亿，比自称的 8 亿少约 2100 万",
+      "detail": "8809+6381+2000+37569+19415+3525+200=77899 万，与 16–60 岁 8 亿差 2101 万，和“3321 万未纳入”不同量级也不吻合。g1 总数原文未给，8809 是四个子项相加。",
+      "node_ids": [
+        "scheme-b/root",
+        "scheme-b/g1",
+        "scheme-b/g2",
+        "scheme-b/g3",
+        "scheme-b/g4",
+        "scheme-b/g5",
+        "scheme-b/g6",
+        "scheme-b/g7"
+      ],
+      "severity": "medium",
+      "kind": "arithmetic"
+    },
+    {
+      "id": "seam-08",
+      "title": "高等教育分项 4026 ≠ 总数 4025",
+      "detail": "1966+23+1671+56+310=4026，原文总数 4025，差 1 万，可由四舍五入解释，不影响结论。",
+      "node_ids": [
+        "scheme-a/life/student/higher",
+        "scheme-a/life/student/higher/undergrad",
+        "scheme-a/life/student/higher/voc-bachelor",
+        "scheme-a/life/student/higher/voc-college",
+        "scheme-a/life/student/higher/phd",
+        "scheme-a/life/student/higher/master"
+      ],
+      "severity": "low",
+      "kind": "arithmetic"
+    }
+  ],
+  "stats": {
+    "nodes": 112,
+    "leaves": 98,
+    "explicit": 98,
+    "inferred": 11,
+    "unclear": 3,
+    "schemes": 2,
+    "seams": 8,
+    "with_value": 107,
+    "value_coverage": 0.9554
+  },
+  "top_leaves": [
+    {
+      "id": "scheme-a/life/adult/occ-g4",
+      "name": "社会生产服务和生活服务人员",
+      "value": 37569,
+      "value_display": "3.76亿",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-a/life/adult/occ-g5",
+      "name": "农林牧渔业生产及辅助人员",
+      "value": 19415,
+      "value_display": "1.94亿",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-b/g5/agriculture",
+      "name": "农业生产人员",
+      "value": 18000,
+      "value_display": "1.80亿",
+      "scheme": "scheme-b"
+    },
+    {
+      "id": "scheme-b/g4/wholesale-retail",
+      "name": "批发与零售服务人员",
+      "value": 16200,
+      "value_display": "1.62亿",
+      "scheme": "scheme-b"
+    },
+    {
+      "id": "scheme-a/life/student/primary",
+      "name": "小学教育",
+      "value": 10700,
+      "value_display": "1.07亿",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-b/g1/enterprise-head",
+      "name": "企事业单位负责人",
+      "value": 8162,
+      "value_display": "8162.00万",
+      "scheme": "scheme-b"
+    },
+    {
+      "id": "scheme-a/life/adult/occ-g2",
+      "name": "专业技术人员",
+      "value": 6381,
+      "value_display": "6381.00万",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-a/life/student/junior",
+      "name": "初中教育",
+      "value": 5121,
+      "value_display": "5121.00万",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-a/life/student/preschool",
+      "name": "学前教育",
+      "value": 4628,
+      "value_display": "4628.00万",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-b/g4/resident-service",
+      "name": "居民服务人员",
+      "value": 4465,
+      "value_display": "4465.00万",
+      "scheme": "scheme-b"
+    },
+    {
+      "id": "scheme-a/life/retired/excess",
+      "name": "四阶段合计超出14亿的部分",
+      "value": 4071,
+      "value_display": "4071.00万",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-a/life/student/high",
+      "name": "普通高中",
+      "value": 4053,
+      "value_display": "4053.00万",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-b/g4/hotel-catering",
+      "name": "住宿和餐饮服务人员",
+      "value": 3550,
+      "value_display": "3550.00万",
+      "scheme": "scheme-b"
+    },
+    {
+      "id": "scheme-a/life/adult/occ-g6",
+      "name": "生产制造及有关人员",
+      "value": 3525,
+      "value_display": "3525.00万",
+      "scheme": "scheme-a"
+    },
+    {
+      "id": "scheme-a/life/retired/unaccounted",
+      "name": "成年阶段未纳入统计的人数",
+      "value": 3321,
+      "value_display": "3321.00万",
+      "scheme": "scheme-a"
+    }
+  ]
+}
