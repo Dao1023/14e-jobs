@@ -1,2 +1,5 @@
 # 14e-jobs
-把14亿人按年龄与职业两套分类法做成可连续下钻的矩形可视化 | Zoomable treemap of China's 1.4B population
+
+14 亿人 · 年龄 × 职业：可连续下钻的矩形可视化。
+
+线上：https://dao1023.github.io/14e-jobs/
