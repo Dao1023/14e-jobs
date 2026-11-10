@@ -1,0 +1,2006 @@
+{
+  "meta": {
+    "title": "14亿人每天都在做什么工作——人口×职业双轴分类还原",
+    "source_video": "「如何知道」14亿人每天都在做什么工作？（B站，飞沫生活研究所）",
+    "source_file": "C:\\Users\\Dao\\Downloads\\Edge\\「如何知道」14亿人每天都在做什么工作？.ass",
+    "parsed_at": "2026-11-10 15:15:45",
+    "dialogue_count": 566,
+    "duration": "00:25:48",
+    "data_asof": "2022年底（原文口径）",
+    "field_notes": {
+      "value": "数值单位统一为“万人”，百分比不入 value，只在 unit_hint/evidence 中说明。",
+      "confidence": "explicit=原文直接给出该数字/类别；inferred=由原文子项算术相加或差额推算；unclear=原文含糊、前后矛盾或归属不明。",
+      "ref": "跨体系指针，指向另一 scheme 中同一实体的节点 id。",
+      "null": "value=null 表示原文未给该节点数字，unit_hint 中注明“无数值”或“原文未给总数”。"
+    },
+    "scheme_count": 2,
+    "subtitle": "年龄轴四阶段 × 职业轴七大群体，两套并行分类法",
+    "schemes_count": 2,
+    "node_count": 112,
+    "leaf_count": 98,
+    "value_coverage": 0.9554
+  },
+  "schemes": [
+    {
+      "id": "scheme-a",
+      "name": "UP主口径（第一套）：人的一生四阶段",
+      "description": "按时间轴把人拆成年龄阶段，逻辑是“时间→年龄→寿命→一生四阶段”。口径为2022年底全国人口，四阶段理论互斥，实际存在16–30岁学生/劳动者重叠与退休再就业重叠。成年分支仅展开到《国家职业分类大典》七大职业群体，明细在 scheme-b，避免重复计数。",
+      "unit": "万人",
+      "root": {
+        "id": "scheme-a/root",
+        "name": "全国14亿人",
+        "value": 140000,
+        "unit_hint": "万人；原文只说“14亿”",
+        "evidence": "全国14亿人每天又都在做些什么",
+        "confidence": "explicit",
+        "children": [
+          {
+            "id": "scheme-a/life/infant",
+            "name": "婴儿时期（0–3岁）",
+            "value": 3218,
+            "unit_hint": "万人；截至2022年底",
+            "evidence": "截至2022年底，三岁以内的婴儿共有3218万人",
+            "confidence": "explicit",
+            "children": [
+              {
+                "id": "scheme-a/life/infant/age-0-1",
+                "name": "0–1岁",
+                "value": null,
+                "unit_hint": "无数值（仅行为描述）",
+                "evidence": "0~1岁主要任务是身体发育和建立情感依恋",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "婴儿时期（0–3岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": null
+              },
+              {
+                "id": "scheme-a/life/infant/age-1-2",
+                "name": "1–2岁",
+                "value": null,
+                "unit_hint": "无数值（仅行为描述）",
+                "evidence": "1~2岁重点任务是动作和语言发展",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "婴儿时期（0–3岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": null
+              },
+              {
+                "id": "scheme-a/life/infant/age-2-3",
+                "name": "2–3岁",
+                "value": null,
+                "unit_hint": "无数值（仅行为描述）",
+                "evidence": "2~3岁开始注重社交认知",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "婴儿时期（0–3岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": null
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "全国14亿人"
+            ],
+            "leaf_count": 3,
+            "value_display": "3218.00万"
+          },
+          {
+            "id": "scheme-a/life/student",
+            "name": "学生时期（3–30岁）",
+            "value": 30000,
+            "unit_hint": "万人；原文“在校生约3亿”，另加辍学178万",
+            "evidence": "在校生总共有约3亿人",
+            "confidence": "explicit",
+            "children": [
+              {
+                "id": "scheme-a/life/student/preschool",
+                "name": "学前教育",
+                "value": 4628,
+                "unit_hint": "万人在园",
+                "evidence": "学前教育共有4628万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "4628.00万"
+              },
+              {
+                "id": "scheme-a/life/student/primary",
+                "name": "小学教育",
+                "value": 10700,
+                "unit_hint": "万人；原文“1.07亿”",
+                "evidence": "小学教育共有1.07亿人，约占总人口7.5%",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1.07亿"
+              },
+              {
+                "id": "scheme-a/life/student/junior",
+                "name": "初中教育",
+                "value": 5121,
+                "unit_hint": "万人",
+                "evidence": "初中教育共有5121万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "5121.00万"
+              },
+              {
+                "id": "scheme-a/life/student/high",
+                "name": "普通高中",
+                "value": 4053,
+                "unit_hint": "万人",
+                "evidence": "高中的在校人数为4053万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "4053.00万"
+              },
+              {
+                "id": "scheme-a/life/student/secondary-voc",
+                "name": "中等职业教育（中专）",
+                "value": 1339,
+                "unit_hint": "万人",
+                "evidence": "中专的在校人数为1339万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1339.00万"
+              },
+              {
+                "id": "scheme-a/life/student/higher",
+                "name": "高等教育在校生（剔除成人/网络本专科）",
+                "value": 4025,
+                "unit_hint": "万人",
+                "evidence": "高等教育在校生总人数为4025万人",
+                "confidence": "explicit",
+                "children": [
+                  {
+                    "id": "scheme-a/life/student/higher/undergrad",
+                    "name": "普通本科",
+                    "value": 1966,
+                    "unit_hint": "万人",
+                    "evidence": "其中普通本科1966万人",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "高等教育在校生（剔除成人/网络本专科）"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "1966.00万"
+                  },
+                  {
+                    "id": "scheme-a/life/student/higher/voc-bachelor",
+                    "name": "职业本科",
+                    "value": 23,
+                    "unit_hint": "万人",
+                    "evidence": "职业本科23万人",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "高等教育在校生（剔除成人/网络本专科）"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "23.00万"
+                  },
+                  {
+                    "id": "scheme-a/life/student/higher/voc-college",
+                    "name": "职业专科",
+                    "value": 1671,
+                    "unit_hint": "万人",
+                    "evidence": "职业专科1671万人",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "高等教育在校生（剔除成人/网络本专科）"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "1671.00万"
+                  },
+                  {
+                    "id": "scheme-a/life/student/higher/phd",
+                    "name": "博士研究生",
+                    "value": 56,
+                    "unit_hint": "万人",
+                    "evidence": "博士56万人",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "高等教育在校生（剔除成人/网络本专科）"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "56.00万"
+                  },
+                  {
+                    "id": "scheme-a/life/student/higher/master",
+                    "name": "硕士研究生",
+                    "value": 310,
+                    "unit_hint": "万人",
+                    "evidence": "硕士310万人",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "高等教育在校生（剔除成人/网络本专科）"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "310.00万"
+                  }
+                ],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 5,
+                "value_display": "4025.00万"
+              },
+              {
+                "id": "scheme-a/life/student/special-ed",
+                "name": "特殊教育",
+                "value": 2.2886,
+                "unit_hint": "万人（2万2886人）",
+                "evidence": "特殊教育学生数量大约为2万2886人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "2.29万"
+              },
+              {
+                "id": "scheme-a/life/student/dropout",
+                "name": "未满16周岁辍学在家",
+                "value": 178,
+                "unit_hint": "万人；与子项不符",
+                "evidence": "未满16周岁辍学在家的孩子共有178万人",
+                "confidence": "unclear",
+                "children": [
+                  {
+                    "id": "scheme-a/life/student/dropout/dropout-primary",
+                    "name": "小学阶段辍学",
+                    "value": 6.4904,
+                    "unit_hint": "万人；按0.06%口径",
+                    "evidence": "小学阶段辍学人数为6万4904",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "未满16周岁辍学在家"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "6.49万"
+                  },
+                  {
+                    "id": "scheme-a/life/student/dropout/dropout-junior",
+                    "name": "初中阶段辍学",
+                    "value": 92.544,
+                    "unit_hint": "万人；辍学率1.78%",
+                    "evidence": "差额为92万5440人……辍学率约1.78%",
+                    "confidence": "explicit",
+                    "children": [],
+                    "depth": 3,
+                    "path": [
+                      "全国14亿人",
+                      "学生时期（3–30岁）",
+                      "未满16周岁辍学在家"
+                    ],
+                    "leaf_count": 1,
+                    "value_display": "92.54万"
+                  }
+                ],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "学生时期（3–30岁）"
+                ],
+                "leaf_count": 2,
+                "value_display": "178.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "全国14亿人"
+            ],
+            "leaf_count": 13,
+            "value_display": "3.00亿"
+          },
+          {
+            "id": "scheme-a/life/adult",
+            "name": "成年时期（16–60岁）",
+            "value": 80000,
+            "unit_hint": "万人；原文“超过8亿”",
+            "evidence": "成年时期年龄横跨16~60岁，人数超过8亿",
+            "confidence": "explicit",
+            "children": [
+              {
+                "id": "scheme-a/life/adult/occ-g1",
+                "name": "负责人（党/国家机关、群众团体、企事业）",
+                "value": null,
+                "unit_hint": "万人；原文未给群体总数",
+                "evidence": "第一个职业群体是党的机关、国家机关、群众团体和社会组织、企事业单位负责人",
+                "confidence": "unclear",
+                "ref": "scheme-b/g1",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": null
+              },
+              {
+                "id": "scheme-a/life/adult/occ-g2",
+                "name": "专业技术人员",
+                "value": 6381,
+                "unit_hint": "万人；10个子项相加，原文未给总数",
+                "evidence": "第二个职业群体是专业技术人员",
+                "confidence": "inferred",
+                "ref": "scheme-b/g2",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "6381.00万"
+              },
+              {
+                "id": "scheme-a/life/adult/occ-g3",
+                "name": "办事人员和有关人员",
+                "value": 2000,
+                "unit_hint": "万人；4个子项相加",
+                "evidence": "第三个职业群体是办事人员和有关人员",
+                "confidence": "inferred",
+                "ref": "scheme-b/g3",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "2000.00万"
+              },
+              {
+                "id": "scheme-a/life/adult/occ-g4",
+                "name": "社会生产服务和生活服务人员",
+                "value": 37569,
+                "unit_hint": "万人；15个子项相加",
+                "evidence": "第四个职业群体是社会生产服务和生活服务人员",
+                "confidence": "inferred",
+                "ref": "scheme-b/g4",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "3.76亿"
+              },
+              {
+                "id": "scheme-a/life/adult/occ-g5",
+                "name": "农林牧渔业生产及辅助人员",
+                "value": 19415,
+                "unit_hint": "万人；6个子项相加",
+                "evidence": "第五个职业群体是农林牧渔业生产及辅助人员",
+                "confidence": "inferred",
+                "ref": "scheme-b/g5",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1.94亿"
+              },
+              {
+                "id": "scheme-a/life/adult/occ-g6",
+                "name": "生产制造及有关人员",
+                "value": 3525,
+                "unit_hint": "万人；32个子项相加",
+                "evidence": "第六个职业群体是生产制造及有关人员",
+                "confidence": "inferred",
+                "ref": "scheme-b/g6",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "3525.00万"
+              },
+              {
+                "id": "scheme-a/life/adult/occ-g7",
+                "name": "军人",
+                "value": 200,
+                "unit_hint": "万人；公开数据",
+                "evidence": "目前我国军人共有200万人",
+                "confidence": "explicit",
+                "ref": "scheme-b/g7",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "成年时期（16–60岁）"
+                ],
+                "leaf_count": 1,
+                "value_display": "200.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "全国14亿人"
+            ],
+            "leaf_count": 7,
+            "value_display": "8.00亿"
+          },
+          {
+            "id": "scheme-a/life/retired",
+            "name": "退休时期（60岁以上）",
+            "value": 32400,
+            "unit_hint": "万人；截至2022年底",
+            "evidence": "截至2022年底，我国退休人员共有3.24亿人",
+            "confidence": "explicit",
+            "children": [
+              {
+                "id": "scheme-a/life/retired/reemployed",
+                "name": "退休后再就业（官方统计）",
+                "value": 750,
+                "unit_hint": "万人",
+                "evidence": "官方统计的只有750万",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "退休时期（60岁以上）"
+                ],
+                "leaf_count": 1,
+                "value_display": "750.00万"
+              },
+              {
+                "id": "scheme-a/life/retired/unaccounted",
+                "name": "成年阶段未纳入统计的人数",
+                "value": 3321,
+                "unit_hint": "万人（即原文“多出4071万”减去750万）",
+                "evidence": "有约3321万人没有包含在内",
+                "confidence": "inferred",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "退休时期（60岁以上）"
+                ],
+                "leaf_count": 1,
+                "value_display": "3321.00万"
+              },
+              {
+                "id": "scheme-a/life/retired/excess",
+                "name": "四阶段合计超出14亿的部分",
+                "value": 4071,
+                "unit_hint": "万人；为差额而非人群",
+                "evidence": "总人数多出了4071万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "全国14亿人",
+                  "退休时期（60岁以上）"
+                ],
+                "leaf_count": 1,
+                "value_display": "4071.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "全国14亿人"
+            ],
+            "leaf_count": 3,
+            "value_display": "3.24亿"
+          }
+        ],
+        "depth": 0,
+        "path": [],
+        "leaf_count": 26,
+        "value_display": "14.00亿"
+      }
+    },
+    {
+      "id": "scheme-b",
+      "name": "UP主口径（第二套）：《国家职业分类大典》2022年版七大职业群体",
+      "description": "仅适用于16–60岁成年在业人口，按职业分类大典中类合并为7大群体，再向下拆子领域（原文给出各群体子领域与细分领域个数）。该体系与 scheme-a 的年龄轴正交，是后续与统计年鉴/人口普查交叉验证的接口。",
+      "unit": "万人",
+      "root": {
+        "id": "scheme-b/root",
+        "name": "16–60岁成年在业人口",
+        "value": 80000,
+        "unit_hint": "万人；原文“人数超过8亿”",
+        "evidence": "成年时期年龄横跨16~60岁，人数超过8亿",
+        "confidence": "explicit",
+        "children": [
+          {
+            "id": "scheme-b/g1",
+            "name": "负责人（第一至第三大类合并）",
+            "value": null,
+            "unit_hint": "万人；原文未给群体总数，子项相加约8809万",
+            "evidence": "党的机关、国家机关、群众团体和社会组织、企事业单位负责人",
+            "confidence": "unclear",
+            "children": [
+              {
+                "id": "scheme-b/g1/state-party",
+                "name": "党和国家机关负责人",
+                "value": 72,
+                "unit_hint": "万人",
+                "evidence": "党和国家机关负责人总共有约72万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "负责人（第一至第三大类合并）"
+                ],
+                "leaf_count": 1,
+                "value_display": "72.00万"
+              },
+              {
+                "id": "scheme-b/g1/mass-org",
+                "name": "人民团体、群众团体、社会组织负责人",
+                "value": 275,
+                "unit_hint": "万人",
+                "evidence": "人民团体和群众团体……负责人共有275万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "负责人（第一至第三大类合并）"
+                ],
+                "leaf_count": 1,
+                "value_display": "275.00万"
+              },
+              {
+                "id": "scheme-b/g1/grassroots",
+                "name": "村委会/居委会负责人",
+                "value": 300,
+                "unit_hint": "万人",
+                "evidence": "60万个村委会和居委会……总计约300万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "负责人（第一至第三大类合并）"
+                ],
+                "leaf_count": 1,
+                "value_display": "300.00万"
+              },
+              {
+                "id": "scheme-b/g1/enterprise-head",
+                "name": "企事业单位负责人",
+                "value": 8162,
+                "unit_hint": "万人",
+                "evidence": "企事业单位负责人共有8162万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "负责人（第一至第三大类合并）"
+                ],
+                "leaf_count": 1,
+                "value_display": "8162.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 4,
+            "value_display": null
+          },
+          {
+            "id": "scheme-b/g2",
+            "name": "专业技术人员（11个领域/122个细分）",
+            "value": 6381,
+            "unit_hint": "万人；10个子项相加，原文未给总数",
+            "evidence": "按照科学研究、工程技术……等11个领域划分，共有122个细分领域",
+            "confidence": "inferred",
+            "children": [
+              {
+                "id": "scheme-b/g2/research",
+                "name": "科学研究人员",
+                "value": 650,
+                "unit_hint": "万人；与研发人员总数532.63万矛盾",
+                "evidence": "科研人员约650万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "650.00万"
+              },
+              {
+                "id": "scheme-b/g2/engineering",
+                "name": "工程技术人员",
+                "value": 2000,
+                "unit_hint": "万人",
+                "evidence": "工程技术人员约2000万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "2000.00万"
+              },
+              {
+                "id": "scheme-b/g2/agri-tech",
+                "name": "农业技术人员",
+                "value": 518,
+                "unit_hint": "万人",
+                "evidence": "农业技术人员约518万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "518.00万"
+              },
+              {
+                "id": "scheme-b/g2/aircraft-ship",
+                "name": "飞机船舶技术人员",
+                "value": 27,
+                "unit_hint": "万人",
+                "evidence": "飞机船舶技术人员约27万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "27.00万"
+              },
+              {
+                "id": "scheme-b/g2/health-tech",
+                "name": "卫生专业技术人员",
+                "value": 1139,
+                "unit_hint": "万人",
+                "evidence": "卫生专业技术人员约1139万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1139.00万"
+              },
+              {
+                "id": "scheme-b/g2/econ-finance",
+                "name": "经济与金融人员",
+                "value": 1355,
+                "unit_hint": "万人",
+                "evidence": "经济和金融人员约1355万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1355.00万"
+              },
+              {
+                "id": "scheme-b/g2/social-religion",
+                "name": "社会与宗教专业人员",
+                "value": 222,
+                "unit_hint": "万人",
+                "evidence": "社会和宗教专业人员约222万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "222.00万"
+              },
+              {
+                "id": "scheme-b/g2/literature-art",
+                "name": "文学艺术专业人员",
+                "value": 184,
+                "unit_hint": "万人",
+                "evidence": "文学艺术专业人员约184万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "184.00万"
+              },
+              {
+                "id": "scheme-b/g2/press-culture",
+                "name": "新闻出版文化专业人员",
+                "value": 86,
+                "unit_hint": "万人",
+                "evidence": "新闻出版文化专业人员约86万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "86.00万"
+              },
+              {
+                "id": "scheme-b/g2/other-tech",
+                "name": "其他专业技术人员",
+                "value": 200,
+                "unit_hint": "万人；兜底项",
+                "evidence": "其他专业技术人员约200万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "专业技术人员（11个领域/122个细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "200.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 10,
+            "value_display": "6381.00万"
+          },
+          {
+            "id": "scheme-b/g3",
+            "name": "办事人员和有关人员（4部分）",
+            "value": 2000,
+            "unit_hint": "万人；4个子项相加，原文未给总数",
+            "evidence": "这个职业群体分为了行政办事、安全和消防、法律事务、其他办事人员四个部分",
+            "confidence": "inferred",
+            "children": [
+              {
+                "id": "scheme-b/g3/admin-affairs",
+                "name": "行政办事及辅助人员",
+                "value": 1500,
+                "unit_hint": "万人",
+                "evidence": "行政办事及辅助人员约1500万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "办事人员和有关人员（4部分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1500.00万"
+              },
+              {
+                "id": "scheme-b/g3/security-fire",
+                "name": "安全和消防及辅助人员",
+                "value": 400,
+                "unit_hint": "万人",
+                "evidence": "安全和消防及辅助人员约400万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "办事人员和有关人员（4部分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "400.00万"
+              },
+              {
+                "id": "scheme-b/g3/legal",
+                "name": "法律事务及辅助人员",
+                "value": 70,
+                "unit_hint": "万人",
+                "evidence": "法律事务及辅助人员约70万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "办事人员和有关人员（4部分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "70.00万"
+              },
+              {
+                "id": "scheme-b/g3/other-clerical",
+                "name": "其他办事人员和有关人员",
+                "value": 30,
+                "unit_hint": "万人；兜底项",
+                "evidence": "其他办事人员和有关人员约30万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "办事人员和有关人员（4部分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "30.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 4,
+            "value_display": "2000.00万"
+          },
+          {
+            "id": "scheme-b/g4",
+            "name": "社会生产服务和生活服务人员（15子领域/96细分）",
+            "value": 37569,
+            "unit_hint": "万人；15个子项相加，原文未给总数",
+            "evidence": "这个职业群体分为了批发零售、交通运输、餐饮住宿等15个子领域",
+            "confidence": "inferred",
+            "children": [
+              {
+                "id": "scheme-b/g4/wholesale-retail",
+                "name": "批发与零售服务人员",
+                "value": 16200,
+                "unit_hint": "万人",
+                "evidence": "批发与零售服务人员约1.62亿人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1.62亿"
+              },
+              {
+                "id": "scheme-b/g4/transport-logistics",
+                "name": "交通运输、仓储、物流和邮政业服务人员",
+                "value": 1927,
+                "unit_hint": "万人",
+                "evidence": "……物流和邮政业服务人员约1927万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1927.00万"
+              },
+              {
+                "id": "scheme-b/g4/hotel-catering",
+                "name": "住宿和餐饮服务人员",
+                "value": 3550,
+                "unit_hint": "万人",
+                "evidence": "住宿和餐饮服务人员约3550万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "3550.00万"
+              },
+              {
+                "id": "scheme-b/g4/ict",
+                "name": "信息传输、软件和信息技术服务人员",
+                "value": 1440,
+                "unit_hint": "万人",
+                "evidence": "信息传输、软件和信息技术服务人员约1440万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1440.00万"
+              },
+              {
+                "id": "scheme-b/g4/finance",
+                "name": "金融服务人员",
+                "value": 1184,
+                "unit_hint": "万人",
+                "evidence": "金融服务人员约1184万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1184.00万"
+              },
+              {
+                "id": "scheme-b/g4/realestate",
+                "name": "房地产服务人员",
+                "value": 1175,
+                "unit_hint": "万人",
+                "evidence": "房地产服务人员约1175万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1175.00万"
+              },
+              {
+                "id": "scheme-b/g4/leasing-business",
+                "name": "租赁和商务服务人员",
+                "value": 3056,
+                "unit_hint": "万人",
+                "evidence": "租赁和商务服务人员约3056万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "3056.00万"
+              },
+              {
+                "id": "scheme-b/g4/technical-support",
+                "name": "技术辅助服务人员",
+                "value": 871,
+                "unit_hint": "万人",
+                "evidence": "技术辅助服务人员约871万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "871.00万"
+              },
+              {
+                "id": "scheme-b/g4/water-env-public",
+                "name": "水利、环境和公共设施管理服务人员",
+                "value": 461,
+                "unit_hint": "万人",
+                "evidence": "水利环境和公共设施管理服务人员约461万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "461.00万"
+              },
+              {
+                "id": "scheme-b/g4/resident-service",
+                "name": "居民服务人员",
+                "value": 4465,
+                "unit_hint": "万人",
+                "evidence": "居民服务人员约4465万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "4465.00万"
+              },
+              {
+                "id": "scheme-b/g4/utilities",
+                "name": "电力、燃气及水供应服务人员",
+                "value": 465,
+                "unit_hint": "万人",
+                "evidence": "电力燃气及水供应服务人员约465万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "465.00万"
+              },
+              {
+                "id": "scheme-b/g4/repair",
+                "name": "修理及制作服务人员",
+                "value": 635,
+                "unit_hint": "万人",
+                "evidence": "修理及制作服务人员约635万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "635.00万"
+              },
+              {
+                "id": "scheme-b/g4/culture-education",
+                "name": "文化和教育服务人员",
+                "value": 1270,
+                "unit_hint": "万人",
+                "evidence": "文化和教育服务人员约1270万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1270.00万"
+              },
+              {
+                "id": "scheme-b/g4/health-sport-leisure",
+                "name": "健康、体育和休闲服务人员",
+                "value": 670,
+                "unit_hint": "万人",
+                "evidence": "健康体育和休闲服务人员约670万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "670.00万"
+              },
+              {
+                "id": "scheme-b/g4/other-service",
+                "name": "其他社会生产服务和生活服务人员",
+                "value": 200,
+                "unit_hint": "万人；兜底项",
+                "evidence": "其他社会生产服务和生活服务人员约200万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "社会生产服务和生活服务人员（15子领域/96细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "200.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 15,
+            "value_display": "3.76亿"
+          },
+          {
+            "id": "scheme-b/g5",
+            "name": "农林牧渔业生产及辅助人员（6子领域/24细分）",
+            "value": 19415,
+            "unit_hint": "万人；6个子项相加，原文未给总数",
+            "evidence": "按农业、林业、畜牧业等分为六个子领域，包含24个细分领域",
+            "confidence": "inferred",
+            "children": [
+              {
+                "id": "scheme-b/g5/agriculture",
+                "name": "农业生产人员",
+                "value": 18000,
+                "unit_hint": "万人",
+                "evidence": "农业生产人员约1.8亿人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "农林牧渔业生产及辅助人员（6子领域/24细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "1.80亿"
+              },
+              {
+                "id": "scheme-b/g5/forestry",
+                "name": "林业生产人员",
+                "value": 265,
+                "unit_hint": "万人",
+                "evidence": "林业生产人员约265万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "农林牧渔业生产及辅助人员（6子领域/24细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "265.00万"
+              },
+              {
+                "id": "scheme-b/g5/husbandry",
+                "name": "畜牧业生产人员",
+                "value": 270,
+                "unit_hint": "万人",
+                "evidence": "畜牧业生产人员约270万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "农林牧渔业生产及辅助人员（6子领域/24细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "270.00万"
+              },
+              {
+                "id": "scheme-b/g5/fishery",
+                "name": "渔业生产人员",
+                "value": 270,
+                "unit_hint": "万人",
+                "evidence": "渔业生产人员约270万",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "农林牧渔业生产及辅助人员（6子领域/24细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "270.00万"
+              },
+              {
+                "id": "scheme-b/g5/agri-support",
+                "name": "农林牧渔业生产辅助人员",
+                "value": 410,
+                "unit_hint": "万人",
+                "evidence": "农林牧渔业生产辅助人员约410万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "农林牧渔业生产及辅助人员（6子领域/24细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "410.00万"
+              },
+              {
+                "id": "scheme-b/g5/other-agri",
+                "name": "其他农林牧渔业生产及辅助人员",
+                "value": 200,
+                "unit_hint": "万人；兜底项",
+                "evidence": "其他农林牧渔业生产及辅助人员约200万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "农林牧渔业生产及辅助人员（6子领域/24细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "200.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 6,
+            "value_display": "1.94亿"
+          },
+          {
+            "id": "scheme-b/g6",
+            "name": "生产制造及有关人员（32子领域/172细分）",
+            "value": 3525,
+            "unit_hint": "万人；32个子项相加，原文未给总数",
+            "evidence": "这个职业群体分为32个子领域和172个细分领域",
+            "confidence": "inferred",
+            "children": [
+              {
+                "id": "scheme-b/g6/farm-product-processing",
+                "name": "农副产品加工人员",
+                "value": 660,
+                "unit_hint": "万人",
+                "evidence": "农副产品加工人员约660万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "660.00万"
+              },
+              {
+                "id": "scheme-b/g6/food-beverage",
+                "name": "食品饮料生产加工人员",
+                "value": 640,
+                "unit_hint": "万人",
+                "evidence": "食品饮料生产加工人员约640万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "640.00万"
+              },
+              {
+                "id": "scheme-b/g6/tobacco",
+                "name": "烟草及其制品加工人员",
+                "value": 45,
+                "unit_hint": "万人",
+                "evidence": "烟草及其制品加工人员约45万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "45.00万"
+              },
+              {
+                "id": "scheme-b/g6/textile-dyeing",
+                "name": "纺织针织印染人员",
+                "value": 160,
+                "unit_hint": "万人",
+                "evidence": "纺织针织印染人员约160万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "160.00万"
+              },
+              {
+                "id": "scheme-b/g6/apparel-leather",
+                "name": "纺织品、服装和皮革毛皮制品加工制作人员",
+                "value": 200,
+                "unit_hint": "万人",
+                "evidence": "……毛皮制品加工制作人员约200万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "200.00万"
+              },
+              {
+                "id": "scheme-b/g6/wood-furniture",
+                "name": "木材加工、家具与木制品制作人员",
+                "value": 150,
+                "unit_hint": "万人",
+                "evidence": "木材加工、家具与木制品制作人员约150万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "150.00万"
+              },
+              {
+                "id": "scheme-b/g6/paper",
+                "name": "纸及纸制品生产加工人员",
+                "value": 30,
+                "unit_hint": "万人",
+                "evidence": "纸及纸制品生产加工人员约30万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "30.00万"
+              },
+              {
+                "id": "scheme-b/g6/printing",
+                "name": "印刷和记录媒介复制人员",
+                "value": 70,
+                "unit_hint": "万人",
+                "evidence": "印刷和记录媒介复制人员约70万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "70.00万"
+              },
+              {
+                "id": "scheme-b/g6/culture-goods",
+                "name": "文教工美、体育和娱乐用品制造人员",
+                "value": 85,
+                "unit_hint": "万人",
+                "evidence": "文教工美、体育和娱乐用品制造人员约85万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "85.00万"
+              },
+              {
+                "id": "scheme-b/g6/petro-coking",
+                "name": "石油加工、炼焦和煤化工生产人员",
+                "value": 70,
+                "unit_hint": "万人",
+                "evidence": "石油加工和炼焦、煤化工生产人员约70万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "70.00万"
+              },
+              {
+                "id": "scheme-b/g6/chemical-raw",
+                "name": "化学原料和化学制品制造人员",
+                "value": 135,
+                "unit_hint": "万人",
+                "evidence": "化学原料和化学制品制造人员约135万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "135.00万"
+              },
+              {
+                "id": "scheme-b/g6/pharma",
+                "name": "医药制造人员",
+                "value": 85,
+                "unit_hint": "万人",
+                "evidence": "医药制造人员约85万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "85.00万"
+              },
+              {
+                "id": "scheme-b/g6/chemical-fiber",
+                "name": "化学纤维制造人员",
+                "value": 20,
+                "unit_hint": "万人",
+                "evidence": "化学纤维制造人员约20万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "20.00万"
+              },
+              {
+                "id": "scheme-b/g6/rubber-plastic",
+                "name": "橡胶和塑料制品制造人员",
+                "value": 55,
+                "unit_hint": "万人",
+                "evidence": "橡胶和塑料制品制造人员约55万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "55.00万"
+              },
+              {
+                "id": "scheme-b/g6/nonmetal",
+                "name": "非金属矿物制品制造人员",
+                "value": 105,
+                "unit_hint": "万人",
+                "evidence": "非金属矿物制品制造人员约105万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "105.00万"
+              },
+              {
+                "id": "scheme-b/g6/mining",
+                "name": "采矿人员",
+                "value": 75,
+                "unit_hint": "万人",
+                "evidence": "采矿人员约75万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "75.00万"
+              },
+              {
+                "id": "scheme-b/g6/metal-smelting",
+                "name": "金属冶炼和压延加工人员",
+                "value": 125,
+                "unit_hint": "万人",
+                "evidence": "金属冶炼和压延加工人员约125万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "125.00万"
+              },
+              {
+                "id": "scheme-b/g6/machining-basic",
+                "name": "机械制造基础加工人员",
+                "value": 55,
+                "unit_hint": "万人",
+                "evidence": "机械制造基础加工人员约55万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "55.00万"
+              },
+              {
+                "id": "scheme-b/g6/metal-products",
+                "name": "金属制品制造人员",
+                "value": 35,
+                "unit_hint": "万人",
+                "evidence": "金属制品制造人员约35万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "35.00万"
+              },
+              {
+                "id": "scheme-b/g6/general-equipment",
+                "name": "通用设备制造人员",
+                "value": 75,
+                "unit_hint": "万人",
+                "evidence": "通用设备制造人员约75万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "75.00万"
+              },
+              {
+                "id": "scheme-b/g6/special-equipment",
+                "name": "专用设备制造人员",
+                "value": 70,
+                "unit_hint": "万人",
+                "evidence": "专用设备制造人员约70万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "70.00万"
+              },
+              {
+                "id": "scheme-b/g6/automobile",
+                "name": "汽车制造人员",
+                "value": 55,
+                "unit_hint": "万人",
+                "evidence": "汽车制造人员约55万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "55.00万"
+              },
+              {
+                "id": "scheme-b/g6/rail-ship-aviation",
+                "name": "铁路船舶、航空设备制造人员",
+                "value": 60,
+                "unit_hint": "万人",
+                "evidence": "铁路船舶、航空设备制造人员约60万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "60.00万"
+              },
+              {
+                "id": "scheme-b/g6/electrical-machinery",
+                "name": "电气机械和器材制造人员",
+                "value": 100,
+                "unit_hint": "万人",
+                "evidence": "电气机械和器材制造人员约100万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "100.00万"
+              },
+              {
+                "id": "scheme-b/g6/electronics",
+                "name": "计算机、通信和其他电子设备制造人员",
+                "value": 75,
+                "unit_hint": "万人",
+                "evidence": "计算机、通信和其他电子设备制造人员约75万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "75.00万"
+              },
+              {
+                "id": "scheme-b/g6/instruments",
+                "name": "仪器仪表制造人员",
+                "value": 15,
+                "unit_hint": "万人",
+                "evidence": "仪器仪表制造人员约15万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "15.00万"
+              },
+              {
+                "id": "scheme-b/g6/recycling",
+                "name": "再生资源综合利用人员",
+                "value": 20,
+                "unit_hint": "万人",
+                "evidence": "再生资源综合利用人员约20万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "20.00万"
+              },
+              {
+                "id": "scheme-b/g6/power-utility",
+                "name": "电力热力气体水生产和输配人员",
+                "value": 60,
+                "unit_hint": "万人",
+                "evidence": "电力热力气体水生产和输配人员约60万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "60.00万"
+              },
+              {
+                "id": "scheme-b/g6/construction",
+                "name": "建筑施工人员",
+                "value": 80,
+                "unit_hint": "万人；疑似严重偏低",
+                "evidence": "建筑施工人员约80万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "80.00万"
+              },
+              {
+                "id": "scheme-b/g6/equipment-operation",
+                "name": "运输设备和通用工程机械操作人员",
+                "value": 50,
+                "unit_hint": "万人",
+                "evidence": "……操作人员及有关人员约50万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "50.00万"
+              },
+              {
+                "id": "scheme-b/g6/production-support",
+                "name": "生产辅助人员",
+                "value": 55,
+                "unit_hint": "万人",
+                "evidence": "生产辅助人员约55万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "55.00万"
+              },
+              {
+                "id": "scheme-b/g6/other-manufacturing",
+                "name": "其他生产制造及有关人员",
+                "value": 10,
+                "unit_hint": "万人；兜底项",
+                "evidence": "其他生产制造及有关人员10万人",
+                "confidence": "explicit",
+                "children": [],
+                "depth": 2,
+                "path": [
+                  "16–60岁成年在业人口",
+                  "生产制造及有关人员（32子领域/172细分）"
+                ],
+                "leaf_count": 1,
+                "value_display": "10.00万"
+              }
+            ],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 32,
+            "value_display": "3525.00万"
+          },
+          {
+            "id": "scheme-b/g7",
+            "name": "军人",
+            "value": 200,
+            "unit_hint": "万人；公开数据",
+            "evidence": "目前我国军人共有200万人",
+            "confidence": "explicit",
+            "children": [],
+            "depth": 1,
+            "path": [
+              "16–60岁成年在业人口"
+            ],
+            "leaf_count": 1,
+            "value_display": "200.00万"
+          }
+        ],
+        "depth": 0,
+        "path": [],
+        "leaf_count": 72,
+        "value_display": "8.00亿"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "c1",
+      "what": "四阶段相加 vs 14亿",
+      "calc": "3218+30000+80000+32400",
+      "result": 145618,
+      "claim": "原文自称四阶段合计多出4071万人",
+      "delta": 5618,
+      "verdict": "不一致（实际多出约5618万）"
+    },
+    {
+      "id": "c2",
+      "what": "4071万 = 再就业750万 + 未纳入3321万",
+      "calc": "750+3321",
+      "result": 4071,
+      "claim": "总人数多出了4071万人……官方统计的只有750万……有约3321万人没有包含在内",
+      "delta": 0,
+      "verdict": "完全对得上"
+    },
+    {
+      "id": "c3",
+      "what": "小学辍学两套口径",
+      "calc": "0.06%×1.0817亿=6.49万；0.79%×1.0732亿=85.27万",
+      "result": 6.4904,
+      "claim": "小学阶段辍学人数为6万4904……约0.79%……辍学在家的孩子共有178万人",
+      "delta": null,
+      "verdict": "178万≈85.27+92.54，说明最终采用0.79%口径，与正文0.06%口径冲突"
+    },
+    {
+      "id": "c4",
+      "what": "企事业负责人分项 vs 总数",
+      "calc": "120+8000+500",
+      "result": 8620,
+      "claim": "企事业单位负责人共有8162万人",
+      "delta": 458,
+      "verdict": "不一致，差458万（疑似8620误为8162）"
+    },
+    {
+      "id": "c5",
+      "what": "党和国家机关负责人分项 vs 总数",
+      "calc": "0.6+0.28+1.5+8.4+65",
+      "result": 75.78,
+      "claim": "党和国家机关负责人总共有约72万人",
+      "delta": 3.780000000000001,
+      "verdict": "不一致，差3.78万"
+    },
+    {
+      "id": "c6",
+      "what": "科研人员 vs 研发人员总数",
+      "calc": "科研650 vs 2022年末研发人员532.63",
+      "result": 650,
+      "claim": "研发人员总数达到532.63万人……科研人员约650万人",
+      "delta": 117.37,
+      "verdict": "子项大于母项，口径必有一处错"
+    },
+    {
+      "id": "c7",
+      "what": "高等教育分项 vs 总数",
+      "calc": "1966+23+1671+56+310",
+      "result": 4026,
+      "claim": "高等教育在校生总人数为4025万人",
+      "delta": 1,
+      "verdict": "四舍五入可解释"
+    },
+    {
+      "id": "c8",
+      "what": "七大群体合计 vs 成年8亿",
+      "calc": "8809+6381+2000+37569+19415+3525+200",
+      "result": 77899,
+      "claim": "人数超过8亿",
+      "delta": 2101,
+      "verdict": "差约2100万，与“3321万未纳入”大体同量级但不吻合"
+    },
+    {
+      "id": "c9",
+      "what": "辍学178万 vs 两个子项",
+      "calc": "6.4904+92.544",
+      "result": 99.0344,
+      "claim": "辍学在家的孩子共有178万人",
+      "delta": 78.9656,
+      "verdict": "不一致，差79万（=小学改用0.79%口径的差额）"
+    }
+  ],
+  "unclear": [
+    {
+      "id": "u1",
+      "where": "00:09:34–00:09:42",
+      "issue": "小学净入学率念成“9% 19.94”，应为99.94%，断句/识别错误；由它反推得辍学率0.06%。"
+    },
+    {
+      "id": "u2",
+      "where": "00:09:45–00:10:13",
+      "issue": "7–12岁人口给了两个互斥的数：1亿817万3253人 与 1亿732万594人（相差约15万），后者用于0.79%口径。"
+    },
+    {
+      "id": "u3",
+      "where": "00:10:51–00:10:58",
+      "issue": "辍学总数178万与两个子项之和99万不符，实际是把小学口径从6.49万换成85.27万，正文未说明。"
+    },
+    {
+      "id": "u4",
+      "where": "00:15:12–00:15:31",
+      "issue": "企事业负责人分项120+8000+500=8620万，原文写8162万；村委会/居委会300万归属不明。"
+    },
+    {
+      "id": "u5",
+      "where": "00:13:32–00:14:15",
+      "issue": "党和国家负责人分项合计约75.78万，原文写72万；随后“这72人”漏掉“万”字。"
+    },
+    {
+      "id": "u6",
+      "where": "00:16:43–00:17:09",
+      "issue": "研发人员总数532.63万，却得出科研人员650万，子项大于母项。"
+    },
+    {
+      "id": "u7",
+      "where": "00:01:37–00:02:03",
+      "issue": "四阶段本应互斥，但学生覆盖3–30岁、成年覆盖16–60岁，16–30岁在校生被两边都算；退休再就业同理。"
+    },
+    {
+      "id": "u8",
+      "where": "00:15:44–00:16:02",
+      "issue": "专业技术人员称11个领域、122个细分，结果只列10项，“法律”领域没有数值。"
+    },
+    {
+      "id": "u9",
+      "where": "00:21:57",
+      "issue": "建筑施工人员仅80万，与建筑业实际从业规模量级不符，疑似口径只含某一小类。"
+    },
+    {
+      "id": "u10",
+      "where": "多处",
+      "issue": "专技、办事、服务、农林、制造五个群体末尾都用“其他…约200万/10万”兜底，疑似为凑总数拍数。"
+    }
+  ],
+  "stats": {
+    "scheme-a": {
+      "nodes": 33,
+      "max_depth": 4,
+      "per_level": {
+        "1": 1,
+        "2": 4,
+        "3": 21,
+        "4": 7
+      },
+      "leaves": 26,
+      "with_value": 29,
+      "explicit": 22,
+      "inferred_value": 6,
+      "null": 4
+    },
+    "scheme-b": {
+      "nodes": 79,
+      "max_depth": 3,
+      "per_level": {
+        "1": 1,
+        "2": 7,
+        "3": 71
+      },
+      "leaves": 72,
+      "with_value": 78,
+      "explicit": 73,
+      "inferred_value": 5,
+      "null": 1
+    }
+  }
+}
