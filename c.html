@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C · 嵌套展开 / 14 亿人职业分布</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{overflow:hidden;background:#f4f5f6;color:#1d2327;font-family:"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.app{height:100%;display:flex;flex-direction:column}
+.top{flex:0 0 44px;height:44px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid #dcdfe2}
+.brand{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap;overflow:hidden}
+.brand .mark{font-size:9.5px;letter-spacing:.12em;color:#9aa0a5;border:1px solid #cfd4d8;line-height:1;padding:2px 4px;font-weight:600;flex:0 0 auto}
+.brand .t{font-size:14px;font-weight:600;letter-spacing:.01em;color:#1b2125;overflow:hidden;text-overflow:ellipsis}
+.crumbs{display:flex;align-items:center;gap:3px;min-width:0;max-width:46vw;font-size:11.5px;color:#767c81;white-space:nowrap}
+.crumbs button{color:#767c81;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 1px;transition:color 120ms}
+.crumbs button:hover{color:#1d2327}
+.crumbs .cur{color:#20262a;font-weight:500;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.crumbs .sep{color:#c0c5c9;padding:0 1px;font-size:10px}
+.switch{justify-self:end;display:flex;align-items:center;gap:14px;font-size:12px}
+.switch button{color:#82888d;padding:2px 0;border-bottom:1.5px solid transparent;transition:color 120ms,border-color 120ms}
+.switch button:hover{color:#2a3034}
+.switch button.on{color:#1b2125;border-color:#1b2125}
+.metrics{flex:0 0 23px;height:23px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;font-size:10.5px;color:#92979c;letter-spacing:.02em;white-space:nowrap;overflow:hidden}
+.metrics .r{color:#a2a7ab}
+main{flex:1;min-height:0;position:relative}
+.map{position:absolute;inset:6px 9px 9px 9px;overflow:hidden;background:#f4f5f6}
+.tip{position:fixed;left:0;top:0;z-index:99;pointer-events:none;display:none;background:#fff;border:1px solid #c9ced2;color:#282e32;font-size:11px;line-height:1.45;padding:3px 7px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tip b{font-weight:600}
+.tile{position:absolute;overflow:hidden;background-color:#ddd;contain:layout paint}
+.tile .hd{position:absolute;left:0;top:0;right:0;display:flex;align-items:center;gap:4px;padding:0 5px;overflow:hidden;white-space:nowrap;font-weight:600;letter-spacing:.01em;cursor:pointer}
+.tile .hd .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1 1 auto}
+.tile .hd .gl{flex:0 0 auto;opacity:.5;font-size:10px;font-weight:400}
+.map > .hd{position:absolute;z-index:2;display:flex;align-items:center;gap:4px;padding:0 4px;overflow:hidden;white-space:nowrap;font-weight:600;cursor:pointer;letter-spacing:.01em}
+.lab{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;overflow:hidden;line-height:1.16}
+.lab .n{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.lab .v{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7;font-variant-numeric:tabular-nums;margin-top:1px}
+.tile.dk{color:rgba(255,255,255,.95)}
+.tile.lt{color:#1f2529}
+.tile.null{background:#e9eaeb;background-image:repeating-linear-gradient(135deg,rgba(35,45,50,.055) 0 3px,rgba(35,45,50,0) 3px 7px)}
+.tile.hov{outline:1.5px solid rgba(24,32,37,.55);outline-offset:-2px}
+.tile.hov[data-d="1"]{outline-color:rgba(255,255,255,.9)}
+.tile.can{cursor:zoom-in}
+.tile.canC{cursor:pointer}
+.plus{position:absolute;right:3px;top:1px;font-size:11px;line-height:1;opacity:.55;pointer-events:none}
+.err{padding:24px;font-size:13px;line-height:1.7;color:#7d4b44}
+/* B */
+.map svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:hidden;touch-action:none}
+.tile-svg{stroke:#fff;stroke-width:1;transition:stroke 120ms,stroke-width 120ms}
+.tile-svg.hov{stroke:#232a2f;stroke-width:2}
+.blabels{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:1}
+.blabels.fade{opacity:0}
+.bl{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;white-space:nowrap;line-height:1.16;font-variant-numeric:tabular-nums}
+.bl .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bl .v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7;margin-top:1px;font-size:.8em;flex:0 0 auto}
+.bl.hd{justify-content:flex-start}
+.bl.hd .v{display:none}
+.bl.dk{color:rgba(255,255,255,.95)}
+.bl.lt{color:rgba(30,36,40,.92)}
+.gcap{position:absolute;z-index:2;font-size:10px;line-height:1.35;padding:1px 5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em;pointer-events:none;font-weight:600}
+.blabels{transition:opacity 130ms linear}
+@media (max-width:719px){
+  .top{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:32px 24px;height:58px;flex-basis:58px;gap:0 10px;padding:0 10px}
+  .brand{grid-column:1;grid-row:1}.brand .t{font-size:13px}.brand .mark{font-size:9px}
+  .switch{grid-column:2;grid-row:1;font-size:11.5px;gap:11px}
+  .crumbs{grid-column:1 / 3;grid-row:2;max-width:100%;font-size:10.5px}
+  .metrics{flex-basis:21px;height:21px;font-size:10px;padding:0 11px}
+  .metrics .r{display:none}
+  .map{inset:4px 6px 6px 6px}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><span class="mark">14E</span><span class="t">中国 14 亿人 · 职业分布</span></div>
+  <nav class="crumbs" id="crumbs"></nav>
+  <div class="switch">
+    <button data-s="scheme-a">年龄</button>
+    <button data-s="scheme-b" class="on">职业</button>
+  </div>
+</header>
+<div class="metrics"><span>98 个类别 · 数据 2022 年 · 2 套分类法</span><span class="r"></span></div>
+<main>
+  <div class="map" id="map"></div>
+</main>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+'use strict';
+
+/* 14亿人职业分布 · 三个 demo 共用的数据与绘制工具（无第三方依赖） */
+
+const PAL = [
+  { h: 176, s: 26 }, // 青
+  { h: 207, s: 29 }, // 蓝
+  { h: 33,  s: 30 }, // 赭
+  { h: 80,  s: 24 }, // 橄榄
+  { h: 266, s: 22 }, // 紫
+  { h: 9,   s: 28 }, // 砖红
+  { h: 205, s: 7  }  // 灰蓝
+];
+
+const ROOT_SHORT = { 'scheme-a': '全国 14 亿人', 'scheme-b': '成年在业 8 亿' };
+
+const $ = (s, r = document) => r.querySelector(s);
+
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function fmtWan(v) {
+  if (v == null || !isFinite(v)) return '无数据';
+  if (v >= 10000) return (v / 10000).toFixed(2) + ' 亿';
+  if (v >= 1000) return Math.round(v).toLocaleString('zh-CN') + ' 万';
+  return (Math.round(v * 10) / 10).toString() + ' 万';
+}
+
+function pctOf(v, p) {
+  if (v == null || !p) return '';
+  return (v / p * 100).toFixed(1) + '%';
+}
+
+function uiScale() { return window.innerWidth < 720 ? 0.86 : 1; }
+
+function disp(n) {
+  return (n._short || n.name || '').trim();
+}
+
+function tone(node) {
+  const p = PAL[(node._g < 0 ? 0 : node._g) % PAL.length];
+  const d = clamp(node._d, 1, 4);
+  const base = [0, 36, 62, 73, 81][d];
+  const wob = [0, 0, 2.2, 1.7, 1.1][d];
+  const sat = Math.max(9, p.s - (d - 1) * 3);
+  return { h: p.h, s: sat, l: clamp(base + (((node._i || 0) * 7) % 5 - 2) * wob, 18, 90) };
+}
+
+function toneCss(t) { return `hsl(${t.h} ${t.s}% ${t.l}%)`; }
+function isDark(t) { return t.l < 56; }
+function textInk(t) { return isDark(t) ? 'rgba(255,255,255,.95)' : 'rgba(30,36,40,.92)'; }
+
+function labelFont(w, h) {
+  if (w < 26 || h < 13) return 0;
+  const a = w * h;
+  const base = a >= 20000 ? 16 : a >= 6800 ? 13 : a >= 2200 ? 11 : a >= 820 ? 9.5 : 0;
+  return base ? base * uiScale() : 0;
+}
+function valueFont(fs) { return Math.max(7.5, fs * 0.72); }
+
+/* 方形化 treemap（等价于 d3.treemapSquarify.ratio(1) 的常用实现） */
+function squarify(items, rect) {
+  const out = [];
+  const wt = d => (d.w != null ? d.w : (d._w || 0));
+  const total = items.reduce((s, d) => s + wt(d), 0);
+  if (!(total > 0) || rect.w <= 0 || rect.h <= 0) return out;
+  const scale = (rect.w * rect.h) / total;
+  const list = items.map((d, idx) => ({ d, idx, a: Math.max(wt(d) * scale, 1e-9) }))
+    .sort((x, y) => y.a - x.a);
+  let x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+  let row = [], rowSum = 0, i = 0;
+  const side = () => Math.min(w, h);
+  const worst = (sum, max, min, s) => Math.max((s * s * max) / (sum * sum), (sum * sum) / (s * s * min));
+  function flush() {
+    if (!row.length) return;
+    if (w >= h) {
+      const cw = rowSum / h;
+      let cy = y;
+      for (const it of row) { const ih = it.a / cw; out.push({ d: it.d, i: it.idx, x, y: cy, w: cw, h: ih }); cy += ih; }
+      x += cw; w -= cw;
+    } else {
+      const rh = rowSum / w;
+      let cx = x;
+      for (const it of row) { const iw = it.a / rh; out.push({ d: it.d, i: it.idx, x: cx, y, w: iw, h: rh }); cx += iw; }
+      y += rh; h -= rh;
+    }
+    row = []; rowSum = 0;
+  }
+  while (i < list.length) {
+    const it = list[i];
+    if (!row.length) { row.push(it); rowSum = it.a; i++; continue; }
+    const mx = Math.max(...row.map(r => r.a), it.a);
+    const mn = Math.min(...row.map(r => r.a), it.a);
+    const withIt = worst(rowSum + it.a, mx, mn, side());
+    const omx = Math.max(...row.map(r => r.a));
+    const omn = Math.min(...row.map(r => r.a));
+    const old = worst(rowSum, omx, omn, side());
+    if (withIt <= old) { row.push(it); rowSum += it.a; i++; }
+    else flush();
+    if (w <= 0.001 || h <= 0.001) break;
+  }
+  flush();
+  out.sort((a, b) => a.i - b.i);
+  return out;
+}
+
+function inset(r, d) {
+  return { x: r.x + d, y: r.y + d, w: Math.max(0, r.w - 2 * d), h: Math.max(0, r.h - 2 * d) };
+}
+
+/* 树预处理：权重、父指针、组色相、null 占位、短名 */
+function prep(root) {
+  if (root._prepped) return;
+  const nodes = [];
+  (function walk(n, p, d, g, i) {
+    n._p = p; n._d = d; n._g = g; n._i = i;
+    n._kids = n.children || [];
+    n._short = String(n.name || '').replace(/（[^）]*）/g, '').trim() || n.name;
+    n._kids.forEach((c, j) => walk(c, n, d + 1, g, j));
+    nodes.push(n);
+  })(root, null, 0, -1, 0);
+
+  function setg(n, g) { n._g = g; n._kids.forEach(c => setg(c, g)); }
+  root._kids.forEach((c, i) => setg(c, i));
+
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const n = nodes[i];
+    if (n.value != null) n._w = n.value;
+    else if (n._kids.length) n._w = n._kids.reduce((s, c) => s + (c._w || 0), 0) || null;
+    else n._w = null;
+  }
+
+  // value=null 的叶子：用父级数值等分占位，只用于面积，不伪造数值
+  for (const n of nodes) {
+    if (n._w == null && !n._kids.length) {
+      const p = n._p;
+      const nulls = (p ? p._kids : []).filter(c => c._w == null && !c._kids.length);
+      const base = p && p.value != null ? p.value : (p && p._w) || 1;
+      n._w = p && p.value != null ? base / Math.max(1, nulls.length) : Math.max(1, base * 0.02);
+      n._ph = true;
+    }
+  }
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const n = nodes[i];
+    if (n.value == null && n._kids.length) {
+      n._w = n._kids.reduce((s, c) => s + (c._w || 0), 0) || n._w;
+    }
+  }
+
+  nodes.forEach(n => {
+    const path = [];
+    let q = n;
+    while (q) { path.unshift(q); q = q._p; }
+    n._path = path;
+  });
+
+  root._all = nodes;
+  root._byId = {};
+  nodes.forEach(n => { root._byId[n.id] = n; });
+  root._prepped = true;
+}
+
+function tipHtml(n) {
+  const share = n._ph ? '' : pctOf(n.value, n._p ? n._p._w : null);
+  let s = `<b>${esc(disp(n))}</b>`;
+  s += ` · ${fmtWan(n._ph ? null : n.value)}`;
+  if (share) s += ` · ${share}`;
+  if (n.value == null && n._kids.length && n._w) s += ` · 子项合计 ${fmtWan(n._w)}`;
+  return s;
+}
+
+const tipEl = document.getElementById('tip');
+function placeTip(x, y) {
+  const pad = 10;
+  const r = tipEl.getBoundingClientRect();
+  let left = x + 12, top = y + 14;
+  if (left + r.width > window.innerWidth - pad) left = x - r.width - 10;
+  if (top + r.height > window.innerHeight - pad) top = y - r.height - 10;
+  tipEl.style.left = Math.max(4, left) + 'px';
+  tipEl.style.top = Math.max(4, top) + 'px';
+}
+function showTip(n, x, y) {
+  tipEl.innerHTML = tipHtml(n);
+  tipEl.style.display = 'block';
+  placeTip(x, y);
+}
+function hideTip() { tipEl.style.display = 'none'; }
+
+function setMetrics(scheme) {
+  const right = document.querySelector('.metrics .r');
+  if (right) {
+    const leaves = scheme.root._all.filter(n => !n._kids.length).length;
+    right.textContent = `${scheme.id === 'scheme-a' ? '年龄轴' : '职业轴'} · ${leaves} 叶`;
+  }
+}
+
+function buildCrumbs(container, scheme, focus, onPick) {
+  const path = focus && focus._path ? focus._path : [scheme.root];
+  const parts = [];
+  path.forEach((n, i) => {
+    const label = i === 0 ? (ROOT_SHORT[scheme.id] || disp(n)) : disp(n);
+    if (i < path.length - 1) {
+      parts.push(`<button data-id="${esc(n.id)}">${esc(label)}</button><span class="sep">›</span>`);
+    } else {
+      parts.push(`<span class="cur">${esc(label)}</span>`);
+    }
+  });
+  container.innerHTML = parts.join('');
+  container.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => onPick(b.dataset.id));
+  });
+}
+
+function markSwitch(schemeId) {
+  document.querySelectorAll('.switch button').forEach(b => {
+    b.classList.toggle('on', b.dataset.s === schemeId);
+  });
+}
+
+async function loadTaxonomy() {
+  const res = await fetch('./data/taxonomy.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+
+'use strict';
+
+/* C · 嵌套式：父级留白 + 左上小标题，点击父块就地展开，视口不动 */
+
+const C = { data: null, scheme: null, byId: null, open: new Set(), last: null };
+const cMap = document.getElementById('map');
+const cCrumbEl = document.getElementById('crumbs');
+let cHover = null;
+
+function cLabel(el, n, r, pad) {
+  const w = r.w - pad * 2, h = r.h - pad * 2;
+  const fs = labelFont(w, h);
+  if (!fs) return;
+  const lab = document.createElement('div');
+  lab.className = 'lab';
+  lab.style.cssText = `left:${pad}px;top:${pad}px;width:${w}px;height:${h}px;font-size:${fs}px`;
+  const showV = fs >= 10 && h >= 28 && w >= 48;
+  const vt = n._ph ? '无数据' : fmtWan(n.value);
+  lab.innerHTML = `<span class="n">${esc(disp(n))}</span>` +
+    (showV ? `<span class="v" style="font-size:${valueFont(fs)}px">${vt}</span>` : '');
+  el.appendChild(lab);
+}
+
+function cTile(n, r, cls) {
+  const t = tone(n);
+  const el = document.createElement('div');
+  const dark = isDark(t);
+  el.className = 'tile ' + (dark ? 'dk' : 'lt') + (n._ph ? ' null' : '') + (cls ? ' ' + cls : '');
+  el.dataset.id = n.id;
+  el.dataset.d = dark ? '1' : '0';
+  el.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:${toneCss(t)}`;
+  if (n._ph) {
+    el.style.backgroundColor = '#e9eaeb';
+    el.style.backgroundImage = 'repeating-linear-gradient(135deg,rgba(35,45,50,.055) 0 3px,rgba(35,45,50,0) 3px 7px)';
+  }
+  return el;
+}
+
+function cGroup(g, r) {
+  if (r.w < 1 || r.h < 1) return;
+  const t = tone(g);
+  const open = C.open.has(g.id);
+  const bg = document.createElement('div');
+  bg.className = 'tile lt';
+  bg.dataset.id = g.id;
+  bg.dataset.kind = 'grp';
+  bg.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:hsl(${t.h} ${Math.max(14, t.s - 2)}% 89%)`;
+  cMap.appendChild(bg);
+
+  if (!open || !g._kids.length || r.w < 44 || r.h < 40) {
+    const el = cTile(g, r, 'canC');
+    el.dataset.kind = 'grp';
+    if (!g._kids.length) cLabel(el, g, r, 2);
+    else cLabel(el, g, r, 2);
+    if (g._kids.length) {
+      const p = document.createElement('span');
+      p.className = 'plus'; p.textContent = '+';
+      el.appendChild(p);
+    }
+    cMap.appendChild(el);
+    return;
+  }
+
+  const hd = document.createElement('div');
+  hd.className = 'hd';
+  hd.dataset.kind = 'grp';
+  hd.style.cssText = `left:${r.x + 6}px;top:${r.y + 3}px;width:${Math.max(0, r.w - 12)}px;height:16px;font-size:10px;color:hsl(${t.h} ${Math.max(18, t.s)}% 30%);justify-content:space-between`;
+  hd.innerHTML = `<span class="nm">${esc(disp(g))}</span><span class="gl" style="opacity:.55">−</span>`;
+  cMap.appendChild(hd);
+
+  const inner = { x: r.x + 7, y: r.y + 22, w: r.w - 14, h: r.h - 29 };
+  if (inner.w < 6 || inner.h < 6) return;
+  const cr = squarify(g._kids, inner);
+  g._kids.forEach((c, i) => {
+    if (!cr[i]) return;
+    const q = inset(cr[i], 1);
+    if (q.w > 1 && q.h > 1) cNode(c, q);
+  });
+}
+
+function cNode(n, r) {
+  if (n._kids.length && C.open.has(n.id)) {
+    const t = tone(n);
+    const frame = document.createElement('div');
+    frame.className = 'tile ' + (isDark(t) ? 'dk' : 'lt');
+    frame.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:${toneCss(t)}`;
+    cMap.appendChild(frame);
+
+    const hh = r.h >= 34 ? 13 : 0;
+    if (hh && r.w >= 40) {
+      const hd = document.createElement('div');
+      hd.className = 'hd';
+      hd.dataset.id = n.id;
+      hd.dataset.kind = 'ehd';
+      const ht = tone(n);
+      hd.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${hh}px;font-size:9px;padding:0 4px;justify-content:space-between;background:hsl(${ht.h} ${Math.max(18, ht.s)}% 40%);color:#fff`;
+      hd.innerHTML = `<span class="nm">${esc(disp(n))}</span><span class="gl" style="opacity:.7">−</span>`;
+      cMap.appendChild(hd);
+    }
+    const body = { x: r.x + 2, y: r.y + 2 + hh, w: r.w - 4, h: r.h - 4 - hh };
+    if (body.w < 3 || body.h < 3) return;
+    const cr = squarify(n._kids, body);
+    n._kids.forEach((c, i) => {
+      if (!cr[i]) return;
+      const q = inset(cr[i], 0.8);
+      if (q.w > 0.8 && q.h > 0.8) cNode(c, q);
+    });
+    return;
+  }
+
+  const el = cTile(n, r, n._kids.length ? 'canC' : '');
+  el.dataset.kind = 'node';
+  cLabel(el, n, r, 2);
+  if (n._kids.length) {
+    const p = document.createElement('span');
+    p.className = 'plus'; p.textContent = '+';
+    el.appendChild(p);
+  }
+  cMap.appendChild(el);
+}
+
+function cCrumbRender() {
+  const root = C.scheme.root;
+  let html = `<button data-id="${esc(root.id)}">${esc(ROOT_SHORT[C.scheme.id] || disp(root))}</button>`;
+  const last = C.last && C.open.has(C.last.id) && C.last !== root ? C.last : null;
+  if (last) {
+    html += `<span class="sep">›</span><span class="cur">${esc(disp(last))}</span>`;
+  }
+  cCrumbEl.innerHTML = html;
+  cCrumbEl.querySelector('button').addEventListener('click', () => {
+    C.open = new Set();
+    C.last = null;
+    cDefaultOpen();
+    cRender();
+  });
+}
+
+function cDefaultOpen() {
+  C.open = new Set();
+  C.scheme.root._kids.forEach(g => C.open.add(g.id));
+  C.last = null;
+}
+
+function cRender() {
+  const W = cMap.clientWidth, H = cMap.clientHeight;
+  cMap.innerHTML = '';
+  cHover = null;
+  hideTip();
+  const rs = squarify(C.scheme.root._kids, { x: 0, y: 0, w: W, h: H });
+  C.scheme.root._kids.forEach((g, i) => {
+    if (!rs[i]) return;
+    const r = inset(rs[i], 1);
+    cGroup(g, r);
+  });
+  cCrumbRender();
+}
+
+function cSetScheme(id) {
+  C.scheme = C.data.schemes.find(s => s.id === id) || C.data.schemes[0];
+  C.byId = C.scheme.root._byId;
+  C.last = null;
+  cDefaultOpen();
+  markSwitch(C.scheme.id);
+  setMetrics(C.scheme);
+  cRender();
+}
+
+cMap.addEventListener('mouseover', e => {
+  const el = e.target.closest && e.target.closest('.tile[data-id]');
+  if (!el || el === cHover) return;
+  if (cHover) cHover.classList.remove('hov');
+  cHover = el;
+  el.classList.add('hov');
+  const n = C.byId[el.dataset.id];
+  if (n) showTip(n, e.clientX, e.clientY);
+});
+cMap.addEventListener('mousemove', e => {
+  if (cHover) placeTip(e.clientX, e.clientY);
+});
+cMap.addEventListener('mouseleave', () => {
+  if (cHover) cHover.classList.remove('hov');
+  cHover = null;
+  hideTip();
+});
+
+cMap.addEventListener('click', e => {
+  const el = e.target.closest && e.target.closest('[data-id]');
+  if (!el) return;
+  const n = C.byId[el.dataset.id];
+  if (!n) return;
+  const kind = el.dataset.kind;
+  if (kind === 'grp' || kind === 'ehd') {
+    const target = kind === 'grp' ? n : n;
+    if (kind === 'grp' && n._p !== C.scheme.root) return;
+    if (C.open.has(target.id)) C.open.delete(target.id);
+    else { C.open.add(target.id); C.last = target; }
+    if (target._p === C.scheme.root && !C.open.has(target.id)) C.last = null;
+    cRender();
+    return;
+  }
+  if (n._kids && n._kids.length) {
+    C.open.add(n.id);
+    C.last = n;
+    cRender();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const deep = [...C.open].map(id => C.byId[id]).filter(n => n && n._p !== C.scheme.root).sort((a, b) => b._d - a._d)[0];
+  if (deep) {
+    C.open.delete(deep.id);
+    if (C.last === deep) C.last = null;
+    cRender();
+  }
+});
+
+document.querySelectorAll('.switch button').forEach(b => {
+  b.addEventListener('click', () => cSetScheme(b.dataset.s));
+});
+
+let cResizeT = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(cResizeT);
+  cResizeT = setTimeout(cRender, 120);
+});
+
+(async function () {
+  try {
+    C.data = await loadTaxonomy();
+    C.data.schemes.forEach(s => prep(s.root));
+    cSetScheme('scheme-b');
+  } catch (err) {
+    cMap.innerHTML = `<div class="err">数据加载失败：${esc(err.message)}<br>请通过本地 http 服务打开本页。</div>`;
+  }
+})();
+
+</script>
+</body>
+</html>
