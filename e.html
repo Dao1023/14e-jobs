@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14 亿人 · 就地展开</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:#fff;color:#1f262b;font-family:"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.app{height:100vh;display:flex;flex-direction:column}
+
+/* ---------------- 顶栏 ---------------- */
+.bar{flex:0 0 54px;height:54px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:20px;padding:0 16px;border-bottom:1px solid #e3e6e8;background:#fff}
+.brand{display:flex;align-items:baseline;gap:9px;white-space:nowrap;min-width:0}
+.brand .mk{flex:0 0 auto;font-size:9px;letter-spacing:.14em;font-weight:600;color:#8b9298;border:1px solid #d3d8db;line-height:1;padding:2px 4px;align-self:center}
+.brand .ttl{font-size:13.5px;font-weight:600;letter-spacing:.01em;color:#1a2125}
+.brand .meta{font-size:10px;color:#98a0a6;letter-spacing:.04em;padding-left:9px;border-left:1px solid #e3e6e8}
+.chips{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;white-space:nowrap;height:100%}
+.chips .cl{flex:0 0 auto;font-size:9.5px;letter-spacing:.1em;color:#98a0a6;font-weight:600}
+.chips .cempty{font-size:10.5px;color:#a6adb2}
+.chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;height:21px;padding:0 6px 0 8px;border:1px solid #d8dcdf;background:#fbfcfc;font-size:10.5px;line-height:19px;color:#39424a;transition:border-color 120ms,background 120ms}
+.chip:hover{border-color:#b9c0c5;background:#f3f5f6}
+.chip .x{color:#9aa1a7;font-size:10px;line-height:1}
+.chip:hover .x{color:#3b444a}
+.tools{display:flex;align-items:center;gap:14px;white-space:nowrap}
+.seg{display:flex;border:1px solid #d8dcdf}
+.seg button{padding:0 10px;height:21px;line-height:20px;font-size:10.5px;color:#6f777d;border-left:1px solid #e3e6e8;transition:background 120ms,color 120ms}
+.seg button:first-child{border-left:0}
+.seg button:hover{color:#1f262b;background:#f5f7f8}
+.seg button.on{background:#1f262b;color:#fff}
+.seg button:disabled{color:#c0c6ca;cursor:default;background:transparent}
+.btn{height:22px;padding:0 9px;border:1px solid #d8dcdf;font-size:10.5px;color:#4d565d;transition:border-color 120ms,color 120ms,background 120ms}
+.btn:hover{border-color:#b9c0c5;color:#1f262b;background:#f7f8f9}
+.btn:disabled{color:#c3c8cc;border-color:#e6e9eb;cursor:default;background:transparent}
+
+/* ---------------- 画布 ---------------- */
+main{flex:1;min-height:0;position:relative;background:#fff}
+#canvas{position:absolute;inset:0}
+.nd{position:absolute;overflow:hidden;cursor:pointer;transition:background-color 120ms}
+.nd.hov{outline:1px solid rgba(16,22,26,.62);outline-offset:-1px}
+.nd.is-null{background-color:#e6e8ea;background-image:repeating-linear-gradient(45deg,rgba(24,30,34,.055) 0 1px,transparent 1px 5px)}
+.lb{position:absolute;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;pointer-events:none;overflow:hidden}
+.lb .nm{font-weight:600;color:#20272c;letter-spacing:.01em;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .vl{color:#1a2125;font-weight:300;letter-spacing:-.01em;font-variant-numeric:tabular-nums;margin-top:2px;line-height:1.06}
+.lb .mt{color:rgba(32,39,44,.56);font-size:10px;line-height:1.4;margin-top:3px;font-variant-numeric:tabular-nums}
+.lb.hero .nm{font-weight:600}
+.lb.hero .vl{font-weight:200}
+.hdr{position:absolute;left:0;top:0;right:0;height:14px;display:flex;align-items:center;gap:6px;padding:0 5px;font-size:9.5px;line-height:14px;color:#39424a;background:rgba(255,255,255,.42);border-bottom:1px solid rgba(24,30,34,.12);cursor:pointer;z-index:2;letter-spacing:.02em}
+.hdr .hn{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hdr .hx{margin-left:auto;color:rgba(40,48,54,.55);white-space:nowrap;flex:0 0 auto}
+.hdr:hover .hx{color:#1f262b}
+
+/* ---------------- tooltip ---------------- */
+.tip{position:fixed;z-index:60;display:none;padding:3px 7px 4px;background:#20272c;color:#f4f6f7;font-size:10.5px;line-height:15px;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
+.tip.on{display:block}
+
+/* ---------------- 叶子卡片 ---------------- */
+.card{position:fixed;left:16px;bottom:16px;z-index:50;width:260px;display:none;background:#fff;border:1px solid #cfd5d9;padding:11px 13px 12px}
+.card.on{display:block}
+.card .ch{display:flex;align-items:flex-start;gap:8px}
+.card .cn{font-size:12.5px;font-weight:600;line-height:1.35;color:#1a2125;flex:1 1 auto}
+.card .cx{flex:0 0 auto;font-size:13px;line-height:1;color:#98a0a6;padding:1px 2px;margin:-1px -2px 0 0}
+.card .cx:hover{color:#1f262b}
+.card .cv{font-size:21px;font-weight:300;letter-spacing:-.01em;line-height:1.15;margin-top:7px;color:#161c20;font-variant-numeric:tabular-nums}
+.card .cv small{font-size:11px;font-weight:400;color:#7d858b;letter-spacing:0;margin-left:5px}
+.card .cs{font-size:10.5px;color:#6f777d;margin-top:2px;font-variant-numeric:tabular-nums}
+.card .cc{display:inline-block;margin-top:8px;font-size:9px;line-height:1;padding:3px 4px;border:1px solid #ccd3d6;color:#5b676d;letter-spacing:.04em}
+.card .cc.warn{border-color:#dfc9c3;color:#8a5b50}
+.card .ce{margin-top:8px;padding-top:7px;border-top:1px solid #eceef0;font-size:10.5px;line-height:1.5;color:#666f75;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .ce::before{content:"依据 ";color:#9aa1a7}
+.err{position:absolute;left:50%;top:44%;margin-left:-230px;width:460px;display:none;padding:16px 18px;border:1px solid #d8cdc9;background:#fff;font-size:12px;line-height:1.7;color:#6d4a45}
+.err.on{display:block}
+
+@media (max-width:900px){
+  .bar{gap:12px;padding:0 10px}
+  .brand .meta{display:none}
+  .tools{gap:9px}
+  .seg button{padding:0 7px}
+}
+@media (max-width:719px){
+  .bar{flex:0 0 46px;height:46px;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:23px 23px;gap:0 10px;padding:0 10px}
+  .brand{grid-column:1;grid-row:1}
+  .brand .ttl{font-size:12.5px}
+  .chips{grid-column:1 / 3;grid-row:2;height:23px}
+  .tools{grid-column:2;grid-row:1}
+  .btn{padding:0 6px}
+  .card{left:8px;right:8px;bottom:8px;width:auto}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="brand">
+      <span class="mk">14E</span>
+      <span class="ttl" id="ttl">14 亿人 · 一生四阶段</span>
+      <span class="meta" id="meta">2022 年 · 万人</span>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="tools">
+      <div class="seg" id="seg" role="tablist" aria-label="分类法"></div>
+      <button class="btn" id="collapseAll" disabled>全部收起</button>
+    </div>
+  </header>
+  <main id="stage">
+    <div id="canvas"></div>
+    <div class="tip" id="tip"></div>
+    <div class="card" id="card"></div>
+    <div class="err" id="err"></div>
+  </main>
+</div>
+<script type="module">
+/* =========================================================
+   就地展开矩形树图：布局一次性算完；展开只在块内部重排子项。
+   无 transform / scale / pan / zoom，无入场动画。
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const stageEl = $('#stage'), canvas = $('#canvas'), tipEl = $('#tip'), cardEl = $('#card');
+const chipsEl = $('#chips'), segEl = $('#seg'), btnAll = $('#collapseAll'), errEl = $('#err'), ttlEl = $('#ttl');
+
+const CONF = { explicit: '原文直给', inferred: '加总推算', unclear: '原文含糊' };
+/* 一级分组：4 段 / 7 群体的色相各一套，都是低饱和浅色 */
+const P_TOP = [
+  { h: 186, s: 30 }, { h: 210, s: 31 }, { h: 96, s: 27 }, { h: 34, s: 35 },
+  { h: 12, s: 31 }, { h: 268, s: 15 }, { h: 152, s: 26 }
+];
+const P_GROUP = [
+  { h: 12, s: 31 }, { h: 268, s: 15 }, { h: 96, s: 27 }, { h: 228, s: 19 },
+  { h: 176, s: 24 }, { h: 56, s: 31 }, { h: 198, s: 17 }, { h: 34, s: 35 }
+];
+
+/* 短名：先查表，再按后缀规则兜底 */
+const SHORT = {
+  '婴儿时期（0–3岁）': '婴儿', '学生时期（3–30岁）': '学生',
+  '成年时期（16–60岁）': '成年', '退休时期（60岁以上）': '退休',
+  '中等职业教育（中专）': '中职',
+  '高等教育在校生（剔除成人/网络本专科）': '高等教育',
+  '未满16周岁辍学在家': '辍学在家', '退休后再就业（官方统计）': '退休再就业',
+  '成年阶段未纳入统计的人数': '未纳入统计', '四阶段合计超出14亿的部分': '超出部分',
+  '全国14亿人': '全国 14 亿',
+
+  '负责人（党/国家机关、群众团体、企事业）': '负责人',
+  '负责人（第一至第三大类合并）': '负责人',
+  '专业技术人员（11个领域/122个细分）': '专业技术', '专业技术人员': '专业技术',
+  '办事人员和有关人员（4部分）': '办事人员', '办事人员和有关人员': '办事人员',
+  '社会生产服务和生活服务人员（15子领域/96细分）': '生活服务',
+  '社会生产服务和生活服务人员': '生活服务',
+  '农林牧渔业生产及辅助人员（6子领域/24细分）': '农林牧渔',
+  '农林牧渔业生产及辅助人员': '农林牧渔',
+  '生产制造及有关人员（32子领域/172细分）': '生产制造',
+  '生产制造及有关人员': '生产制造',
+
+  '党和国家机关负责人': '党政机关', '人民团体、群众团体、社会组织负责人': '群团组织',
+  '村委会/居委会负责人': '村居委会', '企事业单位负责人': '企事业',
+  '科学研究人员': '科研', '工程技术人员': '工程技术', '农业技术人员': '农业技术',
+  '飞机船舶技术人员': '飞机船舶', '卫生专业技术人员': '卫生技术',
+  '经济与金融人员': '经济金融', '社会与宗教专业人员': '社会宗教',
+  '文学艺术专业人员': '文学艺术', '新闻出版文化专业人员': '新闻出版',
+  '其他专业技术人员': '其他技术',
+  '行政办事及辅助人员': '行政办事', '安全和消防及辅助人员': '安全消防',
+  '法律事务及辅助人员': '法律事务', '其他办事人员和有关人员': '其他办事',
+  '批发与零售服务人员': '批发零售', '交通运输、仓储、物流和邮政业服务人员': '交通物流',
+  '住宿和餐饮服务人员': '住宿餐饮', '信息传输、软件和信息技术服务人员': '信息服务',
+  '金融服务人员': '金融服务', '房地产服务人员': '房地产',
+  '租赁和商务服务人员': '租赁商务', '技术辅助服务人员': '技术辅助',
+  '水利、环境和公共设施管理服务人员': '水利环境', '居民服务人员': '居民服务',
+  '电力、燃气及水供应服务人员': '电力燃气', '修理及制作服务人员': '修理制作',
+  '文化和教育服务人员': '文化教育', '健康、体育和休闲服务人员': '健康休闲',
+  '其他社会生产服务和生活服务人员': '其他生活服务',
+  '农业生产人员': '农业', '林业生产人员': '林业', '畜牧业生产人员': '畜牧',
+  '渔业生产人员': '渔业', '农林牧渔业生产辅助人员': '农业辅助',
+  '其他农林牧渔业生产及辅助人员': '其他农业',
+
+  '农副产品加工人员': '农副加工', '食品饮料生产加工人员': '食品饮料',
+  '烟草及其制品加工人员': '烟草加工', '纺织针织印染人员': '纺织印染',
+  '纺织品、服装和皮革毛皮制品加工制作人员': '纺织服装',
+  '木材加工、家具与木制品制作人员': '木材家具', '纸及纸制品生产加工人员': '造纸',
+  '印刷和记录媒介复制人员': '印刷复制',
+  '文教工美、体育和娱乐用品制造人员': '文教工美',
+  '石油加工、炼焦和煤化工生产人员': '石油炼焦',
+  '化学原料和化学制品制造人员': '化学原料', '医药制造人员': '医药制造',
+  '化学纤维制造人员': '化学纤维', '橡胶和塑料制品制造人员': '橡胶塑料',
+  '非金属矿物制品制造人员': '非金属矿物', '采矿人员': '采矿',
+  '金属冶炼和压延加工人员': '金属冶炼', '机械制造基础加工人员': '机械基础',
+  '金属制品制造人员': '金属制品', '通用设备制造人员': '通用设备',
+  '专用设备制造人员': '专用设备', '汽车制造人员': '汽车制造',
+  '铁路船舶、航空设备制造人员': '铁路船舶',
+  '电气机械和器材制造人员': '电气机械',
+  '计算机、通信和其他电子设备制造人员': '电子设备',
+  '仪器仪表制造人员': '仪器仪表', '再生资源综合利用人员': '再生资源',
+  '电力热力气体水生产和输配人员': '电力热力', '建筑施工人员': '建筑施工',
+  '运输设备和通用工程机械操作人员': '工程机械',
+  '生产辅助人员': '生产辅助', '其他生产制造及有关人员': '其他制造'
+};
+
+const S = {
+  data: null, scheme: null, root: null, W: 0, H: 0, base: 0,
+  expanded: new Set(), order: [], card: null, hover: null
+};
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function shortName(raw) {
+  const s0 = String(raw || '');
+  if (SHORT[s0]) return SHORT[s0];
+  let s = s0.replace(/（[^）]*）/g, '').replace(/\([^)]*\)/g, '').trim();
+  if (SHORT[s]) return SHORT[s];
+  s = s.replace(/(及有关人员|及辅助人员|服务人员|生产人员|加工人员|制作人员|操作人员|负责人员|人员)$/, '');
+  s = s.replace(/(及有关|及辅助)$/, '');
+  return s || s0;
+}
+
+function trimNum(v, d) {
+  const s = Number(v).toFixed(d);
+  return s.indexOf('.') < 0 ? s : s.replace(/\.?0+$/, '');
+}
+function fmtWan(v) {
+  if (v == null || !isFinite(v)) return '—';
+  if (v >= 10000) return trimNum(v / 10000, 2) + '亿';
+  if (v >= 1000) return Math.round(v).toLocaleString('en-US') + '万';
+  if (v >= 10) return trimNum(v, 1) + '万';
+  return trimNum(v, 2) + '万';
+}
+function pctOf(v) {
+  if (v == null || !S.base) return '';
+  const p = v / S.base * 100;
+  if (p > 0 && p < 0.1) return '<0.1%';
+  return (p >= 10 ? Math.round(p) : p.toFixed(1)) + '%';
+}
+
+/* ---------------- 二分矩形切分（d3.treemapBinary 同类） ----------------
+   面积严格按权重比例；切的方向会让小项尽量落成「宽而扁」的条，
+   免得出现 40px 宽、700px 高的细缝，标签没法读。            */
+function layoutCells(items, rect, gap) {
+  const n = items.length;
+  if (!n) return [];
+  const total = items.reduce((s, d) => s + Math.max(d._w || 0, 0), 0);
+  if (!(total > 0) || rect.w < 2 || rect.h < 2) {
+    return items.map(() => ({ x: rect.x, y: rect.y, w: 1, h: 1 }));
+  }
+  const floor = total * 0.0012;
+  const list = items.map((d, i) => ({ d, i, w: Math.max(d._w || 0, floor) }));
+  const out = new Array(n);
+
+  /* 细项条：母块够大时，占比 < 0.8% 的子项排成一条高 17px 的底边，横着放名字 */
+  let strip = null;
+  if (n >= 2 && n <= 16 && rect.w * rect.h >= 12000) {
+    const tiny = list.filter(x => (x.d._w || 0) / total < 0.008);
+    if (tiny.length && tiny.length < 5) {
+      strip = { h: 24, items: tiny };
+    }
+  }
+  let body = list;
+  if (strip) {
+    body = list.filter(x => strip.items.indexOf(x) < 0);
+    strip.rect = { x: rect.x, y: rect.y + rect.h - strip.h, w: rect.w, h: strip.h };
+    rect = { x: rect.x, y: rect.y, w: rect.w, h: rect.h - strip.h - 1 };
+  }
+
+  const sumW = arr => arr.reduce((s, x) => s + x.w, 0);
+
+  (function tile(arr, r) {
+    if (arr.length === 1) { out[arr[0].i] = r; return; }
+    const tot = sumW(arr);
+    let acc = 0, best = 1, bestD = Infinity;
+    for (let k = 0; k < arr.length - 1; k++) {
+      acc += arr[k].w;
+      const dd = Math.abs(acc - tot / 2);
+      if (dd < bestD) { bestD = dd; best = k + 1; }
+    }
+    const a = arr.slice(0, best), b = arr.slice(best);
+    const fa = sumW(a) / tot;
+    const small = Math.min(fa, 1 - fa);
+    let stack; // true = 上下切（小项拿满宽）
+    if (small < 0.2) {
+      const sideBySideW = r.w * small;
+      const stackedH = r.h * small;
+      stack = sideBySideW < 104 && stackedH >= 17;
+    } else {
+      stack = r.h > r.w;
+    }
+    let r1, r2;
+    if (stack) {
+      const h1 = Math.round(r.h * fa);
+      r1 = { x: r.x, y: r.y, w: r.w, h: h1 };
+      r2 = { x: r.x, y: r.y + h1, w: r.w, h: r.h - h1 };
+    } else {
+      const w1 = Math.round(r.w * fa);
+      r1 = { x: r.x, y: r.y, w: w1, h: r.h };
+      r2 = { x: r.x + w1, y: r.y, w: r.w - w1, h: r.h };
+    }
+    tile(a, r1); tile(b, r2);
+  })(body, { x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+
+  if (strip) {
+    const tw = strip.items.reduce((a, x) => a + x.w, 0);
+    let x = strip.rect.x;
+    strip.items.forEach((it, k) => {
+      const last = k === strip.items.length - 1;
+      const w = last ? (strip.rect.x + strip.rect.w - x) : Math.max(72, Math.round(strip.rect.w * it.w / tw));
+      out[it.i] = { x, y: strip.rect.y, w, h: strip.rect.h };
+      x += w;
+    });
+  }
+
+  /* 内缝：每块向内缩 gap/2 */
+  const half = (gap || 0) / 2;
+  const res = out.map(o => {
+    if (!o) return { x: rect.x, y: rect.y, w: 1, h: 1 };
+    const rx = Math.round(o.x + half), ry = Math.round(o.y + half);
+    return {
+      x: rx, y: ry,
+      w: Math.max(1, Math.round(o.x + o.w - half) - rx),
+      h: Math.max(1, Math.round(o.y + o.h - half) - ry)
+    };
+  });
+
+  return res;
+}
+
+/* ---------------- 数据预处理 ---------------- */
+function prep(root) {
+  const all = [];
+  let gseq = 0;
+  (function walk(n) {
+    if (n._isAnchor) {
+      n._hue = n._d === 1 ? P_TOP[n._i % P_TOP.length] : P_GROUP[(gseq++) % P_GROUP.length];
+      n._tone = 0;
+    }
+    for (let i = 0; i < n._kids.length; i++) {
+      const c = n._kids[i];
+      c._p = n; c._d = n._d + 1; c._i = i;
+      c._kids = c.children || [];
+      c._short = shortName(c.name);
+      c._isAnchor = c._d === 1 || (c._d === 2 && n._kids.length >= 5);
+      c._hue = c._isAnchor ? null : n._hue;
+      c._tone = c._isAnchor ? 0 : n._tone + 1;
+      all.push(c);
+      walk(c);
+    }
+  })(root);
+
+  // 自底向上：值 / 子项合计
+  for (let i = all.length - 1; i >= 0; i--) {
+    const n = all[i];
+    if (typeof n.value === 'number' && isFinite(n.value)) n._w = n.value;
+    else if (n._kids.length) n._w = n._kids.reduce((s, c) => s + (c._w || 0), 0) || null;
+    else n._w = null;
+  }
+  // 无数值的叶子：只按面积占位，不伪造数值
+  for (const p of all) {
+    if (!p._kids.length) continue;
+    const nulls = p._kids.filter(c => typeof c.value !== 'number');
+    if (!nulls.length) continue;
+    const valued = p._kids.some(c => typeof c.value === 'number');
+    const base = typeof p.value === 'number' ? p.value : (p._w || 1);
+    for (const n of nulls) n._w = valued ? Math.max(1, base * 0.004) : base / nulls.length;
+  }
+  for (let i = all.length - 1; i >= 0; i--) {
+    const n = all[i];
+    if (typeof n.value !== 'number' && n._kids.length) {
+      n._w = n._kids.reduce((s, c) => s + (c._w || 0), 0) || n._w;
+    }
+  }
+  all.forEach(n => { n._null = typeof n.value !== 'number'; });
+
+  root._byId = {};
+  all.forEach(n => { root._byId[n.id] = n; });
+  root._all = all;
+}
+
+/* ---------------- 颜色 ---------------- */
+function hueCss(n) {
+  const p = n._hue || P_TOP[0];
+  const L = Math.max(69, 84 - 5 * (n._tone || 0));
+  return `hsl(${p.h} ${p.s}% ${L}%)`;
+}
+
+/* ---------------- 文本度量与字号阶梯 ---------------- */
+function charW(ch, fs) {
+  const c = ch.codePointAt(0);
+  if (c >= 0x2e80) return fs * 1.0;
+  if (ch === ' ') return fs * 0.32;
+  if (/[0-9]/.test(ch)) return fs * 0.58;
+  return fs * 0.52;
+}
+function textW(s, fs) {
+  let w = 0;
+  for (const ch of s) w += charW(ch, fs);
+  return w;
+}
+
+function labelSpec(n, w, h) {
+  const hero = (n._d === 1 && w * h >= 90000);
+  const inline = !hero && w >= 80 && w >= h * 2.8 && h <= 64;
+  const pad = hero ? 20 : (inline ? (h <= 28 ? 4 : 6) : (w >= 150 && h >= 80 ? 9 : (w >= 70 ? 6 : 4)));
+  const aw = w - pad * 2, ah = h - pad * 2;
+  if (aw < 9 || ah < 8) return null;
+
+  if (inline) {
+    const fs = w >= 180 ? 11 : 9.5;
+    return { fs, pad, lineH: Math.round(fs * 1.3), need: 1, maxL: 1, vfs: fs >= 11 ? 10.5 : 9.5, canVal: h >= 17 && w >= 108, hero: false, inline: true };
+  }
+
+  const name = n._short;
+  const tiers = hero ? [14] : [14, 11, 9.5];
+  for (const fs of tiers) {
+    const lineH = Math.round(fs * 1.25);
+    const tw = textW(name, fs);
+    const maxL = Math.max(1, Math.min(3, Math.floor((ah + 1) / (lineH + 1))));
+    const need = Math.max(1, Math.min(2, Math.ceil(tw / aw)));
+    if (need > maxL) continue;
+    if (need === 1 && tw > aw + 0.5) continue;
+    if (need === 2 && aw < fs * 3.2) continue;
+    const vfs = hero ? 40 : (fs === 14 ? 13 : (fs === 11 ? 10.5 : 9.5));
+    const canVal = n.value != null && ah >= lineH * need + vfs * 1.1 + 2;
+    if (hero && !canVal) return { fs, pad, lineH, need, maxL, vfs, canVal: false, hero: true, inline: false };
+    return { fs, pad, lineH, need, maxL, vfs, canVal, hero, inline: false };
+  }
+  return null;
+}
+
+/* ---------------- 渲染 ---------------- */
+function renderNode(n, parentEl) {
+  const r = n._r, pr = n._pr;
+  const d = document.createElement('div');
+  d.className = 'nd' + (n._null ? ' is-null' : '');
+  d.dataset.id = n.id;
+  d.style.left = (r.x - pr.x) + 'px';
+  d.style.top = (r.y - pr.y) + 'px';
+  d.style.width = r.w + 'px';
+  d.style.height = r.h + 'px';
+  if (!n._null) d.style.backgroundColor = hueCss(n);
+  n._el = d;
+
+  if (S.expanded.has(n.id)) {
+    d.classList.add('open');
+    const hdr = document.createElement('div');
+    hdr.className = 'hdr';
+    hdr.innerHTML = `<span class="hn">${esc(n._short)}</span><span class="hx">× 收起</span>`;
+    d.appendChild(hdr);
+
+    const box = document.createElement('div');
+    box.style.cssText = 'position:absolute;inset:0';
+    d.appendChild(box);
+
+    const inner = { x: r.x + 1, y: r.y + 15, w: r.w - 2, h: r.h - 16 };
+    if (inner.w >= 8 && inner.h >= 8 && n._kids.length) {
+      const area = inner.w * inner.h;
+      const gap = area > 120000 ? 3 : (area > 24000 ? 2 : 1);
+      const rs = layoutCells(n._kids, inner, gap);
+      n._kids.forEach((c, i) => {
+        c._r = rs[i]; c._pr = r;
+        renderNode(c, box);
+      });
+    }
+  } else {
+    const spec = labelSpec(n, r.w, r.h);
+    if (spec) {
+      const lb = document.createElement('div');
+      lb.className = 'lb' + (spec.hero ? ' hero' : '');
+      lb.style.padding = spec.pad + 'px';
+      if (spec.inline) {
+        lb.style.flexDirection = 'row';
+        lb.style.alignItems = 'baseline';
+        lb.style.gap = '8px';
+      }
+      if (spec.hero) lb.style.justifyContent = 'flex-start';
+
+      const nm = document.createElement('div');
+      nm.className = 'nm';
+      nm.style.fontSize = spec.fs + 'px';
+      nm.style.lineHeight = spec.lineH + 'px';
+      if (spec.inline) { nm.style.flex = '0 1 auto'; nm.style.minWidth = '0'; }
+      if (spec.need > 1) {
+        nm.style.display = '-webkit-box';
+        nm.style.webkitLineClamp = String(spec.need);
+        nm.style.webkitBoxOrient = 'vertical';
+        nm.style.whiteSpace = 'normal';
+      }
+      nm.textContent = n._short;
+
+      if (spec.hero) {
+        const top = document.createElement('div');
+        top.appendChild(nm);
+        const bot = document.createElement('div');
+        bot.style.marginTop = '12px';
+        if (spec.canVal && n.value != null) {
+          const vl = document.createElement('div');
+          vl.className = 'vl';
+          vl.style.fontSize = spec.vfs + 'px';
+          vl.style.marginTop = '0';
+          vl.textContent = fmtWan(n.value);
+          bot.appendChild(vl);
+        }
+        const mt = document.createElement('div');
+        mt.className = 'mt';
+        mt.style.fontSize = '11px';
+        mt.style.marginTop = '8px';
+        mt.textContent = '占比 ' + pctOf(n.value);
+        bot.appendChild(mt);
+        if (n._kids.length) {
+          const kd = document.createElement('div');
+          kd.className = 'mt';
+          kd.style.fontSize = '10px';
+          kd.style.marginTop = '6px';
+          kd.textContent = n._kids.length + ' 个子项 · 点击就地展开';
+          bot.appendChild(kd);
+        }
+        const cf = document.createElement('div');
+        cf.className = 'mt';
+        cf.style.fontSize = '10px';
+        cf.style.marginTop = '4px';
+        cf.textContent = CONF[n.confidence] || '';
+        bot.appendChild(cf);
+        lb.appendChild(top);
+        lb.appendChild(bot);
+      } else {
+        lb.appendChild(nm);
+        if (spec.canVal && n.value != null) {
+          const vl = document.createElement('div');
+          vl.className = 'vl';
+          vl.style.fontSize = spec.vfs + 'px';
+          vl.style.marginTop = spec.inline ? '0' : '2px';
+          vl.style.flex = '0 0 auto';
+          vl.textContent = fmtWan(n.value);
+          lb.appendChild(vl);
+        }
+        if (spec.fs === 14 && spec.canVal && r.h >= 130 && r.w >= 160) {
+          const mt = document.createElement('div');
+          mt.className = 'mt';
+          mt.style.fontSize = '10px';
+          mt.textContent = '占比 ' + pctOf(n.value);
+          lb.appendChild(mt);
+          if (n._kids.length && r.h >= 190 && r.w >= 190) {
+            const kd = document.createElement('div');
+            kd.className = 'mt';
+            kd.style.fontSize = '10px';
+            kd.style.marginTop = '3px';
+            kd.textContent = n._kids.length + ' 个子项 · 点击就地展开';
+            lb.appendChild(kd);
+          }
+        }
+      }
+      d.appendChild(lb);
+    }
+  }
+  parentEl.appendChild(d);
+}
+
+function render() {
+  const root = S.root;
+  canvas.innerHTML = '';
+  const rects = layoutCells(root._kids, { x: 0, y: 0, w: S.W, h: S.H }, 3);
+  root._kids.forEach((c, i) => {
+    c._r = rects[i];
+    c._pr = { x: 0, y: 0 };
+    renderNode(c, canvas);
+  });
+  syncChips();
+  syncAll();
+  hideTip();
+}
+
+/* ---------------- 交互 ---------------- */
+function canExpand(n) {
+  return !!(n._kids && n._kids.length && n._r && n._r.w >= 56 && n._r.h >= 46);
+}
+function expand(n) {
+  if (S.expanded.has(n.id)) return;
+  S.expanded.add(n.id);
+  S.order.push(n.id);
+  render();
+}
+function collapse(n) {
+  if (!S.expanded.has(n.id)) return;
+  const drop = new Set();
+  (function w(x) { if (S.expanded.has(x.id)) drop.add(x.id); (x._kids || []).forEach(w); })(n);
+  drop.forEach(id => S.expanded.delete(id));
+  S.order = S.order.filter(id => !drop.has(id));
+  if (S.card && drop.has(S.card)) closeCard();
+  render();
+}
+function collapseAll() {
+  S.expanded.clear(); S.order = [];
+  closeCard();
+  render();
+}
+function syncAll() {
+  btnAll.disabled = S.order.length === 0;
+}
+
+function syncChips() {
+  const parts = ['<span class="cl">已展开</span>'];
+  if (!S.order.length) {
+    parts.push('<span class="cempty">无 · 点方块就地展开</span>');
+  } else {
+    for (const id of S.order) {
+      const n = S.root._byId[id];
+      if (!n) continue;
+      parts.push(`<button class="chip" data-id="${esc(id)}" title="收起 ${esc(n.name)}">${esc(n._short)}<span class="x">×</span></button>`);
+    }
+  }
+  chipsEl.innerHTML = parts.join('');
+}
+
+/* 叶子卡片 */
+function showCard(n) {
+  S.card = n.id;
+  const share = n.value != null ? pctOf(n.value) : '';
+  const conf = CONF[n.confidence] || '';
+  const kids = (n._kids && n._kids.length) ? `含 ${n._kids.length} 个子项，格子过小，未就地展开` : '';
+  const valTxt = n.value != null
+    ? `<div class="cv">${esc(fmtWan(n.value))}<small>${n.value >= 10000 ? '' : '万人'}</small></div>`
+    : `<div class="cv" style="font-size:15px;font-weight:400;color:#5f686e">原文未给该节点数值</div>`;
+  const sumLine = (n.value == null && n._w)
+    ? `<div class="cs">子项合计 ${esc(fmtWan(n._w))} 万人（推算，仅用于面积）</div>` : '';
+  cardEl.innerHTML = `
+    <div class="ch"><div class="cn">${esc(n.name)}</div><button class="cx" data-close="1" aria-label="关闭">×</button></div>
+    ${valTxt}
+    <div class="cs">${n.value != null ? '占 ' + esc(fmtWan(S.base)) + ' 的 ' + esc(share) : ''}${kids ? (n.value != null ? ' · ' : '') + esc(kids) : ''}</div>
+    ${sumLine}
+    <div class="cc${n.confidence === 'unclear' ? ' warn' : ''}">${esc(conf)}</div>
+    ${n.evidence ? `<div class="ce">${esc(n.evidence)}</div>` : ''}
+  `;
+  cardEl.classList.add('on');
+}
+function closeCard() {
+  S.card = null;
+  cardEl.classList.remove('on');
+}
+
+/* tooltip */
+function showTip(n, x, y) {
+  const v = n.value != null ? fmtWan(n.value) : '未给数值';
+  const p = n.value != null ? ' · ' + pctOf(n.value) : '';
+  tipEl.textContent = `${n.name} · ${v}${p}`;
+  tipEl.classList.add('on');
+  placeTip(x, y);
+}
+function placeTip(x, y) {
+  const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  let left = x + 13, top = y + 15;
+  if (left + w > window.innerWidth - 6) left = x - w - 11;
+  if (top + h > window.innerHeight - 6) top = y - h - 11;
+  tipEl.style.left = Math.max(4, left) + 'px';
+  tipEl.style.top = Math.max(4, top) + 'px';
+}
+function hideTip() {
+  tipEl.classList.remove('on');
+}
+
+canvas.addEventListener('mouseover', e => {
+  const el = e.target.closest('.nd');
+  if (!el) { if (S.hover) { S.hover.classList.remove('hov'); S.hover = null; } hideTip(); return; }
+  if (!S.root) return;
+  const n = S.root._byId[el.dataset.id];
+  if (!n) return;
+  if (S.hover && S.hover !== el) S.hover.classList.remove('hov');
+  S.hover = el;
+  el.classList.add('hov');
+  showTip(n, e.clientX, e.clientY);
+});
+canvas.addEventListener('mousemove', e => {
+  if (tipEl.classList.contains('on')) placeTip(e.clientX, e.clientY);
+});
+canvas.addEventListener('mouseleave', () => {
+  if (S.hover) { S.hover.classList.remove('hov'); S.hover = null; }
+  hideTip();
+});
+
+canvas.addEventListener('click', e => {
+  const el = e.target.closest('.nd');
+  if (!el) {
+    if (e.target === canvas) closeCard();
+    return;
+  }
+  if (!S.root) return;
+  const n = S.root._byId[el.dataset.id];
+  if (!n) return;
+  const onHeader = !!e.target.closest('.hdr');
+  if (S.expanded.has(n.id)) { collapse(n); return; }
+  if (onHeader) return;
+  if (canExpand(n)) expand(n);
+  else showCard(n);
+});
+
+chipsEl.addEventListener('click', e => {
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  const n = S.root && S.root._byId[b.dataset.id];
+  if (n) collapse(n);
+});
+
+cardEl.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) { closeCard(); e.stopPropagation(); }
+});
+cardEl.addEventListener('mousedown', e => e.stopPropagation());
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (S.card) { closeCard(); return; }
+    if (S.order.length) {
+      const n = S.root._byId[S.order[S.order.length - 1]];
+      if (n) collapse(n);
+    }
+  }
+});
+btnAll.addEventListener('click', collapseAll);
+
+/* ---------------- 分类法切换 ---------------- */
+const VIEWS = [
+  { key: 'merge', label: '合并总览', id: 'scheme-c' },
+  { key: 'age', label: '仅年龄', id: 'scheme-a' },
+  { key: 'occ', label: '仅职业', id: 'scheme-b' }
+];
+function buildSeg() {
+  segEl.innerHTML = VIEWS.map(v => {
+    const has = !!S.data.schemes.find(s => s.id === v.id);
+    return `<button data-view="${v.key}" data-id="${v.id}"${has ? '' : ' disabled title="该分类轴尚未生成"'}>${v.label}</button>`;
+  }).join('');
+}
+function setScheme(id) {
+  const sc = S.data.schemes.find(s => s.id === id) || S.data.schemes[0];
+  S.scheme = sc;
+  S.root = sc.root;
+  S.root._d = 0;
+  S.root._kids = S.root.children || [];
+  S.root._short = shortName(S.root.name);
+  S.root._isAnchor = false;
+  S.root._tone = 0;
+  S.root._hue = 0;
+  if (!S.root._byId) prep(S.root);
+  S.base = typeof S.root.value === 'number' ? S.root.value : S.root._w;
+  S.expanded.clear(); S.order = []; S.card = null;
+  cardEl.classList.remove('on');
+  ttlEl.textContent = '14 亿人 · 一生四阶段';
+  document.querySelectorAll('#seg button').forEach(b => {
+    b.classList.toggle('on', b.dataset.id === sc.id);
+    b.disabled = !S.data.schemes.find(s => s.id === b.dataset.id);
+  });
+  measure();
+  render();
+  segEl.querySelectorAll('button').forEach(b => {
+    b.onclick = () => { if (!b.disabled) setScheme(b.dataset.id); };
+  });
+}
+
+function measure() {
+  const r = stageEl.getBoundingClientRect();
+  S.W = Math.round(r.width);
+  S.H = Math.round(r.height);
+  canvas.style.width = S.W + 'px';
+  canvas.style.height = S.H + 'px';
+}
+
+/* ---------------- 地址栏状态（便于截图/直达） ---------------- */
+function applyHash() {
+  if (!S.root) return;
+  const h = new URLSearchParams(location.hash.replace(/^#/, ''));
+  const view = h.get('view');
+  if (view === 'age') setScheme('scheme-a');
+  else if (view === 'occ') setScheme('scheme-b');
+  (h.get('open') || '').split(',').filter(Boolean).forEach(id => {
+    const n = S.root._byId[id];
+    if (n && n._kids && n._kids.length) expand(n);
+  });
+  const pick = h.get('pick');
+  if (pick) { const n = S.root._byId[pick]; if (n) showCard(n); }
+}
+
+/* ---------------- 启动 ---------------- */
+async function boot() {
+  try {
+    const res = await fetch('../site/data/taxonomy.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    S.data = await res.json();
+    buildSeg();
+    const def = S.data.schemes.find(s => s.id === 'scheme-c') || S.data.schemes[0];
+    setScheme(def.id);
+    document.querySelectorAll('#seg button').forEach(b => {
+      b.classList.toggle('on', b.dataset.id === def.id);
+    });
+    applyHash();
+    window.addEventListener('resize', () => {
+      if (!S.root) return;
+      measure();
+      // 尺寸变化时重新定位（不改展开状态）
+      render();
+    });
+    window.addEventListener('hashchange', applyHash);
+  } catch (err) {
+    errEl.classList.add('on');
+    errEl.textContent = '数据读取失败：' + err.message + '（请通过 http 服务打开，不要用 file://）';
+    console.error(err);
+  }
+}
+boot();
+</script>
+</body>
+</html>
