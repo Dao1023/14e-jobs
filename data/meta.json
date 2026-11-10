@@ -160,121 +160,130 @@
     }
   ],
   "stats": {
-    "nodes": 112,
-    "leaves": 98,
-    "explicit": 98,
-    "inferred": 11,
-    "unclear": 3,
-    "schemes": 2,
+    "scheme": "scheme-c",
+    "nodes": 104,
+    "leaves": 91,
+    "max_depth": 4,
+    "per_level": {
+      "1": 1,
+      "2": 4,
+      "3": 21,
+      "4": 78
+    },
+    "explicit": 96,
+    "inferred": 6,
+    "unclear": 2,
+    "schemes": 3,
     "seams": 8,
-    "with_value": 107,
-    "value_coverage": 0.9554
+    "with_value": 100,
+    "value_coverage": 0.9615
   },
+  "top_leaves_scheme": "scheme-c",
   "top_leaves": [
     {
-      "id": "scheme-a/life/adult/occ-g4",
-      "name": "社会生产服务和生活服务人员",
-      "value": 37569,
-      "value_display": "3.76亿",
-      "scheme": "scheme-a"
-    },
-    {
-      "id": "scheme-a/life/adult/occ-g5",
-      "name": "农林牧渔业生产及辅助人员",
-      "value": 19415,
-      "value_display": "1.94亿",
-      "scheme": "scheme-a"
-    },
-    {
-      "id": "scheme-b/g5/agriculture",
+      "id": "merge/adult/g5/agriculture",
       "name": "农业生产人员",
       "value": 18000,
       "value_display": "1.80亿",
-      "scheme": "scheme-b"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-b/g4/wholesale-retail",
+      "id": "merge/adult/g4/wholesale-retail",
       "name": "批发与零售服务人员",
       "value": 16200,
       "value_display": "1.62亿",
-      "scheme": "scheme-b"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-a/life/student/primary",
+      "id": "merge/life/student/primary",
       "name": "小学教育",
       "value": 10700,
       "value_display": "1.07亿",
-      "scheme": "scheme-a"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-b/g1/enterprise-head",
+      "id": "merge/adult/g1/enterprise-head",
       "name": "企事业单位负责人",
       "value": 8162,
       "value_display": "8162.00万",
-      "scheme": "scheme-b"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-a/life/adult/occ-g2",
-      "name": "专业技术人员",
-      "value": 6381,
-      "value_display": "6381.00万",
-      "scheme": "scheme-a"
-    },
-    {
-      "id": "scheme-a/life/student/junior",
+      "id": "merge/life/student/junior",
       "name": "初中教育",
       "value": 5121,
       "value_display": "5121.00万",
-      "scheme": "scheme-a"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-a/life/student/preschool",
+      "id": "merge/life/student/preschool",
       "name": "学前教育",
       "value": 4628,
       "value_display": "4628.00万",
-      "scheme": "scheme-a"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-b/g4/resident-service",
+      "id": "merge/adult/g4/resident-service",
       "name": "居民服务人员",
       "value": 4465,
       "value_display": "4465.00万",
-      "scheme": "scheme-b"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-a/life/retired/excess",
+      "id": "merge/life/retired/excess",
       "name": "四阶段合计超出14亿的部分",
       "value": 4071,
       "value_display": "4071.00万",
-      "scheme": "scheme-a"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-a/life/student/high",
+      "id": "merge/life/student/high",
       "name": "普通高中",
       "value": 4053,
       "value_display": "4053.00万",
-      "scheme": "scheme-a"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-b/g4/hotel-catering",
+      "id": "merge/adult/g4/hotel-catering",
       "name": "住宿和餐饮服务人员",
       "value": 3550,
       "value_display": "3550.00万",
-      "scheme": "scheme-b"
+      "scheme": "scheme-c"
     },
     {
-      "id": "scheme-a/life/adult/occ-g6",
-      "name": "生产制造及有关人员",
-      "value": 3525,
-      "value_display": "3525.00万",
-      "scheme": "scheme-a"
-    },
-    {
-      "id": "scheme-a/life/retired/unaccounted",
+      "id": "merge/life/retired/unaccounted",
       "name": "成年阶段未纳入统计的人数",
       "value": 3321,
       "value_display": "3321.00万",
-      "scheme": "scheme-a"
+      "scheme": "scheme-c"
+    },
+    {
+      "id": "merge/adult/g4/leasing-business",
+      "name": "租赁和商务服务人员",
+      "value": 3056,
+      "value_display": "3056.00万",
+      "scheme": "scheme-c"
+    },
+    {
+      "id": "merge/adult/g2/engineering",
+      "name": "工程技术人员",
+      "value": 2000,
+      "value_display": "2000.00万",
+      "scheme": "scheme-c"
+    },
+    {
+      "id": "merge/life/student/higher/undergrad",
+      "name": "普通本科",
+      "value": 1966,
+      "value_display": "1966.00万",
+      "scheme": "scheme-c"
+    },
+    {
+      "id": "merge/adult/g4/transport-logistics",
+      "name": "交通运输、仓储、物流和邮政业服务人员",
+      "value": 1927,
+      "value_display": "1927.00万",
+      "scheme": "scheme-c"
     }
   ]
 }
