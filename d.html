@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14 亿人 · 职业分布 · 地图式树图</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{overflow:hidden;background:#f4f5f6;color:#1d2327;font-family:"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.app{height:100%;display:flex;flex-direction:column}
+.top{flex:0 0 50px;height:50px;display:grid;grid-template-columns:minmax(172px,1fr) auto minmax(128px,1fr);align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid #dcdfe2;background:#f4f5f6}
+.brand{display:flex;align-items:center;gap:9px;min-width:0;white-space:nowrap;justify-self:start}
+.brand .mark{flex:0 0 auto;font-size:9px;letter-spacing:.13em;font-weight:600;color:#8d9499;border:1px solid #cdd2d6;line-height:1;padding:2px 4px}
+.brand .t{font-size:14px;font-weight:600;letter-spacing:.01em;color:#1b2125;overflow:hidden;text-overflow:ellipsis}
+.nav{display:flex;align-items:center;gap:7px;min-width:0;max-width:64vw;justify-self:center}
+.back{flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;height:24px;padding:0 7px;border:1px solid #d6dade;background:#fff;color:#4e565b;font-size:11px;line-height:22px;white-space:nowrap;transition:color 120ms,border-color 120ms,background 120ms}
+.back:hover{color:#1d2327;border-color:#bfc5c9;background:#fafbfb}
+.back.off{opacity:.34;cursor:default;background:transparent;border-color:#dfe2e4;color:#9aa0a5}
+.back .ar{font-size:12px;line-height:1;transform:translateY(-.5px)}
+.vline{flex:0 0 1px;align-self:center;height:15px;background:#d7dbde}
+.crumbs{display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden;white-space:nowrap;font-size:11.5px;color:#767c81}
+.crumb{display:block;max-width:156px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 7px;background:#e7e9eb;color:#555d62;line-height:17px;transition:background 120ms,color 120ms}
+button.crumb:hover{background:#dcdfe2;color:#20262a}
+.crumb.cur{background:#20262a;color:#fff;font-weight:500}
+.sep{flex:0 0 auto;color:#b9bfc4;font-size:10px;line-height:1;padding:0 1px}
+.switch{justify-self:end;display:flex;align-items:center;gap:14px;font-size:12px;white-space:nowrap}
+.switch button{color:#858b90;padding:3px 0 2px;border-bottom:1.5px solid transparent;transition:color 120ms,border-color 120ms}
+.switch button:hover{color:#2a3034}
+.switch button.on{color:#1b2125;border-color:#1b2125;font-weight:500}
+main{flex:1;min-height:0;position:relative;background:#f4f5f6}
+#chart{position:absolute;inset:7px 10px 26px 10px}
+.hint{position:absolute;right:12px;bottom:6px;z-index:4;font-size:11px;line-height:14px;color:#9aa0a5;letter-spacing:.02em;white-space:nowrap;pointer-events:none}
+.err{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:9;display:none;max-width:540px;padding:18px 22px;background:#fff;border:1px solid #d7dbde;font-size:12.5px;line-height:1.75;color:#6d4a45}
+.err.on{display:block}
+/* tooltip（ECharts HTML tooltip，不是侧栏） */
+.tt{padding:8px 10px 9px;max-width:326px;font-size:11.5px;line-height:1.5;color:#242a2e;text-align:left}
+.tt-h{display:flex;align-items:flex-start;gap:6px;justify-content:space-between}
+.tt-n{font-size:12.5px;font-weight:600;line-height:1.35;color:#1b2125}
+.tag{flex:0 0 auto;margin-top:1px;font-size:9.5px;line-height:1;padding:3px 4px;border:1px solid;white-space:nowrap;font-weight:500;letter-spacing:.02em}
+.tag.explicit{color:#3b6456;border-color:#bfd3cb;background:#f0f6f3}
+.tag.inferred{color:#7a6030;border-color:#ddceb2;background:#faf6ee}
+.tag.unclear{color:#7c4f49;border-color:#ddc4c0;background:#faf1ef}
+.tt-v{margin-top:4px;font-variant-numeric:tabular-nums;color:#20262a}
+.tt-v b{font-size:13px;font-weight:600}
+.tt-sub{margin-left:6px;color:#82888d;font-size:10.5px}
+.tt-r{margin-top:2px;color:#7c8388;font-size:10.5px;font-variant-numeric:tabular-nums}
+.tt-e{margin-top:6px;padding-top:6px;border-top:1px solid #eceef0;color:#747b80;font-size:10.5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tt-e em{font-style:normal;color:#5b6267}
+@media (max-width:760px){
+  .top{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:32px 26px;height:58px;flex-basis:58px;gap:0 10px;padding:0 10px}
+  .brand{grid-column:1;grid-row:1}
+  .brand .t{font-size:13px}
+  .switch{grid-column:2;grid-row:1;font-size:11.5px;gap:11px}
+  .nav{grid-column:1 / 3;grid-row:2;justify-self:start;max-width:100%;width:100%}
+  .back .bt{display:none}
+  .crumb{max-width:104px}
+  #chart{inset:5px 6px 24px 6px}
+  .hint{right:8px;font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><span class="mark">14E</span><span class="t" id="title">14 亿人 · 职业分布</span></div>
+    <div class="nav">
+      <button class="back" id="back" title="返回上一层（Esc）"><span class="ar">←</span><span class="bt">返回上一层</span></button>
+      <span class="vline"></span>
+      <nav class="crumbs" id="crumbs" aria-label="当前层级"></nav>
+    </div>
+    <div class="switch" role="tablist" aria-label="分类法">
+      <button data-s="scheme-a" role="tab">年龄</button>
+      <button data-s="scheme-b" class="on" role="tab">职业</button>
+    </div>
+  </header>
+  <main id="map">
+    <div id="chart"></div>
+    <div class="hint">滚轮缩放 · 拖拽平移 · 点方块下钻 · Esc 返回</div>
+    <div class="err" id="err"></div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (s) { return document.querySelector(s); };
+  var CH = $('#chart'), CRUMBS = $('#crumbs'), BACK = $('#back'), ERR = $('#err'), TITLE = $('#title');
+
+  var ROOT_SHORT = { 'scheme-a': '全国 14 亿', 'scheme-b': '成年在业 8 亿' };
+  var CONF = { explicit: '原文直给', inferred: '加总推算', unclear: '存疑' };
+  var HUES = [
+    { h: 176, s: 28 }, // 青
+    { h: 207, s: 30 }, // 蓝
+    { h: 35,  s: 32 }, // 赭
+    { h: 80,  s: 24 }, // 橄榄
+    { h: 266, s: 23 }, // 紫
+    { h: 10,  s: 30 }, // 砖红
+    { h: 205, s: 9  }  // 灰蓝
+  ];
+
+  var state = {
+    tax: null, meta: null, schemeId: 'scheme-b', scheme: null,
+    chart: null, root: null, byId: {}, viewId: null, focusId: null, switching: false
+  };
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function shortName(s) {
+    return String(s || '').replace(/（[^）]*）/g, '').replace(/\([^)]*\)/g, '').trim() || String(s || '');
+  }
+  function fmtInt(v) { return Math.round(v).toLocaleString('zh-CN'); }
+  function trimNum(v, d) {
+    var s = Number(v).toFixed(d == null ? 2 : d);
+    return s.replace(/\.?0+$/, '');
+  }
+  function compactWan(v) {
+    if (v == null || !isFinite(v)) return '—';
+    if (v >= 10000) return trimNum(v / 10000, 2) + '亿';
+    if (v >= 1000) return fmtInt(v) + '万';
+    return trimNum(v, 1) + '万';
+  }
+
+  /* ---------- 数据预处理：补权重、父指针、色相、短名 ---------- */
+  function prep(scheme) {
+    var root = scheme.root;
+    var nodes = [];
+
+    (function walk(n, p, d, g, neutral, idx) {
+      n._parent = p;
+      n._depth = d;
+      n._g = g;
+      n._idx = idx;
+      n._neutral = neutral;
+      n._kids = n.children || [];
+      n._short = shortName(n.name);
+      n._kids.forEach(function (c, i) {
+        walk(c, n, d + 1, d === 0 ? i : g, neutral || (d === 1 && n.value == null), i);
+      });
+      nodes.push(n);
+    })(root, null, 0, -1, false, 0);
+
+    // 原始值 / 子项合计（nodes 是后序：子在前、父在后，顺序遍历才是自底向上）
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      if (n.value != null && isFinite(n.value)) n._w = n.value;
+      else if (n._kids.length) {
+        n._w = n._kids.reduce(function (s, c) { return s + (c._w || 0); }, 0) || null;
+      } else n._w = null;
+    }
+
+    // value=null 的叶子：用父级数值等分占位，只用于面积，不伪造数值
+    nodes.forEach(function (n) {
+      if (n._w == null && !n._kids.length) {
+        var p = n._parent;
+        var sibs = (p ? p._kids : []).filter(function (c) { return c._w == null && !c._kids.length; });
+        var base = p && p.value != null ? p.value : (p && p._w) || 1;
+        n._w = base / Math.max(1, sibs.length);
+        n._placeholder = true;
+      }
+    });
+    // null 的内部节点用子项合计
+    for (var j = 0; j < nodes.length; j++) {
+      var m = nodes[j];
+      if (m.value == null && m._kids.length) {
+        m._w = m._kids.reduce(function (s, c) { return s + (c._w || 0); }, 0) || null;
+      }
+    }
+    // 布局权重：父块严格等于子块之和，避免 ECharts 归一化时出现错位
+    for (var k = 0; k < nodes.length; k++) {
+      var q = nodes[k];
+      q._layout = q._kids.length
+        ? q._kids.reduce(function (s, c) { return s + (c._layout || 0); }, 0)
+        : (q._w || 1);
+    }
+
+    root._all = nodes;
+    root._byId = {};
+    nodes.forEach(function (x) { root._byId[x.id] = x; });
+    return root;
+  }
+
+  function colorFor(n) {
+    if (n._depth === 0) return '#f4f5f6';
+    if (n.value == null && n._depth === 1) return '#e6e8ea'; // 原值缺失的整组：浅灰
+    if (n._neutral) {
+      var gl = clamp(64 - (n._depth - 1) * 9 + ((n._idx % 3) - 1) * 1.5, 42, 72);
+      return 'hsl(210 7% ' + gl + '%)';
+    }
+    var p = HUES[(n._g < 0 ? 0 : n._g) % HUES.length];
+    var l = clamp(64 - (n._depth - 1) * 9 + ((n._idx % 3) - 1) * 1.6, 33, 70);
+    var s = Math.max(8, p.s - (n._depth - 1) * 2);
+    return 'hsl(' + p.h + ' ' + s + '% ' + l + '%)';
+  }
+
+  function inkFor(n) {
+    if (n.value == null) return '#4f565b';
+    var l = 64 - (n._depth - 1) * 9;
+    return l <= 43 ? 'rgba(255,255,255,.96)' : '#20262a';
+  }
+
+  function toData(n) {
+    var kids = n._kids.map(toData);
+    var ink = inkFor(n);
+    var d = {
+      id: n.id,
+      name: n.name,
+      value: n._layout,
+      itemStyle: { color: colorFor(n) },
+      label: n._depth === 0 ? { show: false } : { color: ink },
+      upperLabel: n._depth === 0 ? { show: false } : { color: ink },
+      _raw: n.value,
+      _confidence: n.confidence,
+      _evidence: n.evidence,
+      _parentId: n._parent ? n._parent.id : null,
+      _placeholder: !!n._placeholder
+    };
+    if (kids.length) d.children = kids;
+    return d;
+  }
+
+  /* ---------- 文案 ---------- */
+  function labelText(n) {
+    return n._short + '\n' + compactWan(n.value);
+  }
+
+  function tooltipHtml(n) {
+    var name = n.name || '';
+    var conf = CONF[n.confidence] || '存疑';
+    var html = '<div class="tt"><div class="tt-h"><span class="tt-n">' + esc(name) + '</span>' +
+      '<span class="tag ' + esc(n.confidence || 'unclear') + '">' + esc(conf) + '</span></div>';
+
+    var main = '', sub = '';
+    if (n.value == null) {
+      main = '原文未给出数值';
+      if (n._kids.length && n._layout) sub = '子项合计 ' + fmtInt(n._layout) + ' 万';
+      else if (!n._kids.length) sub = '面积按父级等分占位';
+    } else if (n.value >= 10000) {
+      main = trimNum(n.value / 10000, 2) + ' 亿';
+      sub = fmtInt(n.value) + ' 万人';
+    } else if (n.value >= 1000) {
+      main = fmtInt(n.value) + ' 万人';
+      sub = '约 ' + (n.value / 10000).toFixed(2) + ' 亿';
+    } else {
+      main = trimNum(n.value, 1) + ' 万人';
+    }
+    html += '<div class="tt-v"><b>' + esc(main) + '</b>' + (sub ? '<span class="tt-sub">' + esc(sub) + '</span>' : '') + '</div>';
+
+    var rel = '';
+    if (!n._parent) rel = '顶层';
+    else if (n.value == null) rel = '占父级 —';
+    else {
+      var base = n._parent.value != null ? n._parent.value : n._parent._layout;
+      if (base) {
+        rel = '占父级 ' + (n._parent.value == null ? '≈' : '') + (n.value / base * 100).toFixed(1) + '%';
+      }
+    }
+    if (rel) {
+      var pname = n._parent ? n._parent._short : '';
+      html += '<div class="tt-r">' + esc(rel) + (pname ? ' · 父级：' + esc(pname) : '') + '</div>';
+    }
+
+    if (n.evidence) {
+      html += '<div class="tt-e"><em>原文：</em>' + esc(n.evidence) + '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- 面包屑 / 返回 ---------- */
+  function seriesModel() {
+    if (!state.chart) return null;
+    return state.chart.getModel().getSeriesByIndex(0);
+  }
+  function focusNode() {
+    return (state.focusId && state.byId[state.focusId]) || state.root;
+  }
+  function dataPath(node) {
+    var out = [];
+    while (node) { out.unshift(node); node = node._parent; }
+    return out;
+  }
+  function syncBreadcrumb(force) {
+    var f = focusNode();
+    if (!f) return;
+    var path = dataPath(f);
+    var vid = path.map(function (n) { return n.id; }).join('>') + '@' + state.schemeId;
+    if (!force && vid === state.viewId) return;
+    state.viewId = vid;
+
+    var html = '';
+    path.forEach(function (node, i) {
+      var isCur = i === path.length - 1;
+      var label = i === 0 ? (ROOT_SHORT[state.schemeId] || shortName(node.name)) : (node._short || shortName(node.name));
+      var full = node.name;
+      if (isCur) {
+        html += '<span class="crumb cur" title="' + esc(full) + '">' + esc(label) + '</span>';
+      } else {
+        html += '<button class="crumb" data-id="' + esc(node.id) + '" title="' + esc(full) + '">' + esc(label) + '</button>';
+        html += '<span class="sep">›</span>';
+      }
+    });
+    CRUMBS.innerHTML = html;
+    CRUMBS.querySelectorAll('button[data-id]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        jumpTo(b.getAttribute('data-id'));
+      });
+    });
+    // 太宽时让当前层可见
+    if (CRUMBS.scrollWidth > CRUMBS.clientWidth) CRUMBS.scrollLeft = CRUMBS.scrollWidth;
+    BACK.classList.toggle('off', path.length <= 1);
+    BACK.setAttribute('aria-disabled', path.length <= 1 ? 'true' : 'false');
+  }
+
+  function resetZoomHost() {
+    try {
+      var sm = seriesModel();
+      var view = state.chart.getViewOfSeriesModel(sm);
+      if (view && view._controllerHost) view._controllerHost.zoom = 1;
+    } catch (e) { /* 内部字段，失败不影响交互 */ }
+  }
+
+  function jumpTo(nodeId) {
+    if (!state.chart || !nodeId || !state.byId[nodeId]) return;
+    state.focusId = nodeId;
+    resetZoomHost();
+    // 始终 zoomToNode：只缩放到目标，不改 viewRoot、不重建层级布局
+    state.chart.dispatchAction({ type: 'treemapZoomToNode', targetNodeId: nodeId });
+    syncBreadcrumb(true);
+  }
+
+  function goRoot() {
+    if (!state.root || !state.chart) return;
+    jumpTo(state.root.id);
+  }
+
+  function goUp() {
+    var f = focusNode();
+    if (!f || !f._parent) {
+      BACK.classList.add('off');
+      return;
+    }
+    jumpTo(f._parent.id);
+  }
+
+  /* ---------- 图表 ---------- */
+  function labelLayout(p) {
+    var text = p.text || '';
+    if (text.indexOf('\n') < 0) return; // upperLabel 不参与字号自适应
+    var w = p.rect.width, h = p.rect.height;
+    if (w < 44 || h < 24) return { fontSize: 0, width: 1, height: 1 };
+    var fs = Math.min(w / 8.8, h / 2.7, 13.5);
+    if (fs < 9.5) return { fontSize: 0, width: 1, height: 1 };
+    fs = Math.round(fs * 10) / 10;
+    return { fontSize: fs, width: Math.max(10, w - 6), height: Math.max(10, h - 4) };
+  }
+
+  function render() {
+    var rootData = toData(state.root);
+    var option = {
+      animation: true,
+      animationDuration: 420,
+      animationDurationUpdate: 820,
+      animationEasingUpdate: 'cubicInOut',
+      tooltip: {
+        trigger: 'item',
+        confine: true,
+        enterable: false,
+        transitionDuration: 0.12,
+        backgroundColor: '#fff',
+        borderColor: '#cdd2d6',
+        borderWidth: 1,
+        padding: 0,
+        textStyle: { color: '#242a2e', fontSize: 11.5 },
+        extraCssText: 'box-shadow:0 4px 14px rgba(20,30,35,.10);border-radius:2px;',
+        formatter: function (p) {
+          var n = state.byId[p.data && p.data.id];
+          return n ? tooltipHtml(n) : '';
+        }
+      },
+      series: [{
+        type: 'treemap',
+        name: '单位：万人',
+        left: 0, top: 0, right: 0, bottom: 0,
+        width: '100%', height: '100%',
+        roam: true,
+        nodeClick: 'zoomToNode',
+        // ECharts 只给「有可见子节点」的父块画 upperLabel；leafDepth:2 会把
+        // 7 个一级组变成 leaf-root，父组名反而消失。3 让组名常驻，同时
+        // 72 个叶子靠 visibleMin + labelLayout 渐进显字，缩放后才读细节。
+        leafDepth: 3,
+        visibleMin: 80,
+        scaleLimit: { min: 1, max: 8 },
+        zoomToNodeRatio: 0.42,
+        squareRatio: 0.5 * (1 + Math.sqrt(5)),
+        breadcrumb: { show: false },
+        drillDownIcon: '',
+        itemStyle: {
+          gapWidth: 2,
+          borderColor: '#fff',
+          borderWidth: 0
+        },
+        label: {
+          show: true,
+          position: 'inside',
+          align: 'center',
+          verticalAlign: 'middle',
+          overflow: 'truncate',
+          ellipsis: '…',
+          fontSize: 11,
+          padding: [2, 3],
+          color: '#20262a',
+          formatter: function (p) {
+            var n = state.byId[p.data && p.data.id];
+            return n ? labelText(n) : p.name;
+          }
+        },
+        upperLabel: {
+          show: true,
+          height: 19,
+          fontSize: 10.5,
+          fontWeight: 600,
+          padding: [0, 5],
+          overflow: 'truncate',
+          ellipsis: '…',
+          color: '#20262a',
+          formatter: function (p) {
+            var n = state.byId[p.data && p.data.id];
+            return n ? n._short : p.name;
+          }
+        },
+        emphasis: {
+          itemStyle: { borderColor: '#20262a', borderWidth: 1 },
+          label: { fontWeight: 600 }
+        },
+        labelLayout: labelLayout,
+        data: [rootData]
+      }]
+    };
+    state.chart.setOption(option, true);
+    state.viewId = null;
+    setTimeout(function () { syncBreadcrumb(true); }, 60);
+  }
+
+  function applyScheme(id) {
+    var scheme = state.tax.schemes.filter(function (s) { return s.id === id; })[0];
+    if (!scheme) return;
+    state.schemeId = id;
+    state.scheme = scheme;
+    state.root = prep(scheme);
+    state.byId = state.root._byId;
+    state.focusId = state.root.id;
+    state.viewId = null;
+    document.querySelectorAll('.switch button').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-s') === id);
+      b.setAttribute('aria-selected', b.getAttribute('data-s') === id ? 'true' : 'false');
+    });
+    render();
+  }
+
+  function showError(e) {
+    ERR.textContent = '图表没能加载：' + (e && e.message ? e.message : String(e)) + '。请确认通过本地 http 服务打开，且能访问 CDN。';
+    ERR.classList.add('on');
+  }
+
+  function boot() {
+    Promise.all([
+      fetch('./data/taxonomy.json', { cache: 'no-store' }).then(function (r) {
+        if (!r.ok) throw new Error('taxonomy.json HTTP ' + r.status);
+        return r.json();
+      }),
+      fetch('./data/meta.json', { cache: 'no-store' }).then(function (r) {
+        if (!r.ok) throw new Error('meta.json HTTP ' + r.status);
+        return r.json();
+      })
+    ]).then(function (res) {
+      state.tax = res[0];
+      state.meta = res[1];
+      if (!window.echarts) throw new Error('ECharts 未加载');
+      document.title = '14 亿人 · 职业分布 · 地图式树图';
+      TITLE.title = [state.meta.title, state.meta.data_asof].filter(Boolean).join(' · ');
+      state.chart = window.echarts.init(CH, null, { renderer: 'canvas' });
+
+      // 点击只缩放视野，getViewRoot 仍是虚拟根；所以用 targetNode 记录焦点，
+      // 面包屑/Esc/返回全部围绕这个焦点，而不是 ECharts 的 viewRoot。
+      ['treemapZoomToNode', 'treemapRootToNode'].forEach(function (ev) {
+        state.chart.on(ev, function (p) {
+          var id = p && ((p.targetNode && p.targetNode.id) || p.targetNodeId);
+          if (id && state.byId[id]) state.focusId = id;
+          syncBreadcrumb(true);
+        });
+      });
+      // 真实点击时 action 的 targetNode.id 不一定带出来，click 的 data.id 最可靠
+      state.chart.on('click', function (p) {
+        var id = p && p.data && p.data.id;
+        if (id && state.byId[id]) {
+          state.focusId = id;
+          syncBreadcrumb(true);
+        }
+      });
+      state.chart.on('rendered', function () { syncBreadcrumb(false); });
+
+      applyScheme('scheme-b');
+
+      BACK.addEventListener('click', goUp);
+      document.querySelectorAll('.switch button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.getAttribute('data-s');
+          if (id !== state.schemeId) applyScheme(id);
+        });
+      });
+
+      // Esc 上浮一层
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+          e.preventDefault();
+          goUp();
+        }
+      });
+
+      // 双击空白/图表背景 → 根
+      state.chart.getZr().on('dblclick', function (e) {
+        if (!e.target) goRoot();
+      });
+      $('#map').addEventListener('dblclick', function (e) {
+        if (e.target === $('#map')) goRoot();
+      });
+
+      window.addEventListener('resize', function () {
+        if (state.chart) state.chart.resize();
+      });
+    }).catch(function (e) {
+      showError(e);
+      console.error(e);
+    });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
